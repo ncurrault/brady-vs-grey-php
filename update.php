@@ -3,13 +3,20 @@
 //ini_set("display_errors", "On"); // For debugging errors
 // header("Content-Type: text/plain"); // For debugging with print_r
 
-// Get the API key from my file
-$key_file = fopen('api_key.txt', 'r');
-$api_key = fread($key_file, 39);
-fclose($key_file);
+// Some handy SQL functions
+require_once "sql_functions.php";
 
+// for the API key
 require_once "secret_stuff.php";
 
+$greyChannels = array(
+'CGPGrey', 'CGPGrey2', 'greysfavs');
+$bradyChannels = array(
+'numberphile', 'Computerphile', 'sixtysymbols',
+'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
+'bibledex', 'wordsoftheworld', 'FavScientist',
+'psyfile', 'BackstageScience', 'foodskey',
+'BradyStuff');
 
 function addVideoReplacing($unescapedVid)
 {	
@@ -34,32 +41,10 @@ function deleteExtraneousVids()
 function recordUpdate()
 {
 	// sqlWithoutRet("DELETE FROM UpdateLog"); // Taylor's idea
-	sqlWithoutRet("INSERT INTO UpdateLog () VALUES ()");
+	$now = strftime("%F %T");
+	
+	sqlWithoutRet("INSERT INTO UpdateLog (UpdateDatetime) VALUES ('$now')");
 }
-
-// The API needs its library in the include_path.
-set_include_path(
-	get_include_path()
-	.
-	PATH_SEPARATOR
-	.
-	$_SERVER['DOCUMENT_ROOT'] . "/ZendFramework-1.12.7/library"
-);
-
-// Initialize the API with my key
-require_once 'Zend/Loader.php'; // the Zend dir must be in your include_path
-Zend_Loader::loadClass('Zend_Gdata_YouTube');
-$yt = new Zend_Gdata_YouTube(null, "Brady vs. Grey - PHP version", null, $api_key);
-$yt->setMajorProtocolVersion(2);
-
-$greyChannels = array(
-'CGPGrey', 'CGPGrey2', 'greysfavs');
-$bradyChannels = array(
-'numberphile', 'Computerphile', 'sixtysymbols',
-'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
-'bibledex', 'wordsoftheworld', 'FavScientist',
-'psyfile', 'BackstageScience', 'foodskey',
-'BradyStuff');
 
 // Functions for getting videos from the API and putting them in arrays
 function vidEntryToArray($videoEntry, $channel) 
@@ -76,11 +61,15 @@ function vidEntryToArray($videoEntry, $channel)
 	'Creator' => (in_array($channel, $greyChannels) ? "C.G.P. Grey" : "Brady Haran"),
 	'ViewCount' => $videoEntry->getVideoViewCount(),
 	);
-	
 }
 function getUploads($channel, $maxNum = 25)
 {
-	global $yt;
+	global $api_key;
+	// Initialize the API with my key
+	require_once 'Zend/Loader.php'; // the Zend dir must be in your include_path
+	Zend_Loader::loadClass('Zend_Gdata_YouTube');
+	$yt = new Zend_Gdata_YouTube(null, "Brady vs. Grey - PHP version", null, $api_key);
+	$yt->setMajorProtocolVersion(2);
 	
 	$ret = array( );
 	$videoFeed = $yt->getUserUploads($channel);
@@ -97,28 +86,41 @@ function getUploads($channel, $maxNum = 25)
 	return $ret;
 }
 
-$vids = array( );
-
-foreach ($greyChannels as $channel)
+function update_with_api()
 {
-	$vids = array_merge($vids, getUploads($channel, 1));
+	// The API needs its library in the include_path.
+	set_include_path(
+	get_include_path()
+	.
+	PATH_SEPARATOR
+	.
+	$_SERVER['DOCUMENT_ROOT'] . "/ZendFramework-1.12.7/library"
+);
+	
+	global $greyChannels, $bradyChannels;
+	$vids = array( );
+	
+	foreach ($greyChannels as $channel)
+	{
+		$vids = array_merge($vids, getUploads($channel, 1));
+	}
+	foreach ($bradyChannels as $channel)
+	{
+		$vids = array_merge($vids, getUploads($channel, 20));
+	}
+	
+	foreach ($vids as $vid)
+	{
+		// If this video is already in the database, delete it (we need the updated view count)
+		addVideoReplacing($vid);
+	}
+	
+	// Delete unnecessary videos from both creators.
+	deleteExtraneousVids();
+	
+	// Record the time
+	recordUpdate();
+	
+	error_log("Updated!");
 }
-foreach ($bradyChannels as $channel)
-{
-	$vids = array_merge($vids, getUploads($channel, 20));
-}
-
-foreach ($vids as $vid)
-{
-	// If this video is already in the database, delete it (we need the updated view count)
-	addVideoReplacing($vid);
-}
-
-// Delete unnecessary videos from both creators.
-deleteExtraneousVids();
-
-// Record the time
-recordUpdate();
-
-echo "Done!";
 ?>
