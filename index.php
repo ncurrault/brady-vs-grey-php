@@ -25,8 +25,13 @@ A:
 </font>
 <span style="font-size: 100px;">
 <?php
-	$grey_vid = sql_query("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
-	$brady_vids = sql_query("SELECT * FROM Video WHERE Creator='Brady Haran' AND UploadDate > '" . $grey_vid["UploadDate"] . "' ORDER BY UploadDate DESC");
+	$grey_vid = sqlWithRet("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
+	if (!$grey_vid) // The database is urgently in need of an update.
+	{
+		update_with_api();
+		$grey_vid = sqlWithRet("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
+	}	
+	$brady_vids = sqlWithRet("SELECT * FROM Video WHERE Creator='Brady Haran' AND UploadDate > '" . $grey_vid["UploadDate"] . "' ORDER BY UploadDate DESC");
 	
 	echo count($brady_vids);
 ?></span>
