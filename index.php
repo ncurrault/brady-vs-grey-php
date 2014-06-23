@@ -17,7 +17,7 @@
 	<?php
 		function sql_query($q)
 		{
-			$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db_2", 8889);
+			$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db", 8889);
 			if (mysqli_connect_errno())
 			{
 				$n = mysqli_connect_errno();

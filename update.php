@@ -6,7 +6,7 @@
 // Some handy SQL functions
 function sqlWithRet($q)
 {
-	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db_2", 8889);
+	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db", 8889);
 	if (mysqli_connect_errno())
 	{
 		$n = mysqli_connect_errno();
@@ -33,7 +33,7 @@ function sqlWithRet($q)
 }
 function sqlWithoutRet($query)
 {
-	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db_2", 8889);
+	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db", 8889);
 	if (mysqli_connect_errno())
 	{
 		$n = mysqli_connect_errno();
