@@ -156,7 +156,7 @@ A:
 </table>
 
 <hr />
-Last updated: <?php echo sql_query("SELECT * FROM UpdateLog LIMIT 1")[0]['UpdateDatetime']; ?>.
+Last updated: <?php echo sql_query("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; ?>.
 Powered by YouTube Data API (v3).
 <hr />
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
