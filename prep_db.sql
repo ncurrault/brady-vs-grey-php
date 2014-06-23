@@ -18,7 +18,7 @@ CREATE TABLE UpdateLog
 PID INT NOT NULL AUTO_INCREMENT, 
 PRIMARY KEY(PID),
 
-UpdateDatetime DATETIME
+UpdateDatetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- To update the update time: `Insert Table( DateTimeCol )Values( CURRENT_TIMESTAMP )`
