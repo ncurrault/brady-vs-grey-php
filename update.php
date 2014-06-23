@@ -1,7 +1,10 @@
 <?php
 
+//ini_set("display_errors", "On"); // For debugging errors
+// header("Content-Type: text/plain"); // For debugging with print_r
+
 // Some handy SQL functions
-function sql_ret($q)
+function sqlWithRet($q)
 {
 	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db_2", 8889);
 	if (mysqli_connect_errno())
@@ -28,7 +31,7 @@ function sql_ret($q)
 		return $ret;
 	}
 }
-function sql_no_ret($q)
+function sqlWithoutRet($query)
 {
 	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db_2", 8889);
 	if (mysqli_connect_errno())
@@ -38,18 +41,39 @@ function sql_no_ret($q)
 	}
 	else
 	{
-		$q = mysqli_query($sql_connection,$q);
+		$q = mysqli_query($sql_connection,$query);
 		
 		if (!$q)
 		{
-			echo "Error with query";
+			echo "Error with query: <pre><code>$query</code></pre><br />";
 		}
 	}
+}
+
+function addVideoReplacing($unescapedVid)
+{
+	$vid = array();
+	foreach ($unescapedVid as $property => $value)
+	{
+		$vid[$property] = mysql_real_escape_string($value);
+	}
 	
-	/* I'll use these later
-	 * "DELETE FROM $table WHERE PID=$pid"
-	 * "INSERT INTO Video (Title, YouTubeID, UploadDate, Channel, Creator, ViewCount) VALUES ('Title', 'ABC123ID456', '2014-06-17 23:23:00', 'deastruction', 'Dylan Hong', 301)"
-	 */
+	sqlWithoutRet("DELETE FROM Video WHERE YouTubeID='{$vid['YouTubeID']}'");
+	
+	sqlWithoutRet("INSERT INTO
+		Video (Title, YouTubeID, UploadDate, Channel, Creator, ViewCount)
+		VALUES ('{$vid['Title']}', '{$vid['YouTubeID']}', '{$vid['UploadDate']}', '{$vid['Channel']}', '{$vid['Creator']}', {$vid['ViewCount']} )"
+	);
+}
+function deleteExtraneousVids()
+{
+	$latestGreyDate = sqlWithRet("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0]['UploadDate'];
+	sqlWithoutRet("DELETE FROM Video WHERE UploadDate < '$latestGreyDate'"); 
+}
+function recordUpdate()
+{
+	// sqlWithoutRet("DELETE FROM UpdateLog"); // Taylor's idea
+	sqlWithoutRet("INSERT INTO UpdateLog () VALUES ()");
 }
 
 // Get the API key from my file
@@ -72,40 +96,73 @@ Zend_Loader::loadClass('Zend_Gdata_YouTube');
 $yt = new Zend_Gdata_YouTube(null, "Brady vs. Grey - PHP version", null, $api_key);
 $yt->setMajorProtocolVersion(2);
 
+$greyChannels = array(
+'CGPGrey', 'CGPGrey2', 'greysfavs');
+$bradyChannels = array(
+'numberphile', 'Computerphile', 'sixtysymbols',
+'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
+'bibledex', 'wordsoftheworld', 'FavScientist',
+'psyfile', 'BackstageScience', 'foodskey',
+'BradyStuff');
+
 // Functions for getting videos from the API and putting them in arrays
 function vidEntryToArray($videoEntry, $channel) 
 {
-	$ret = array(
+	global $greyChannels, $bradyChannels;
+	return array(
 	'Title' => $videoEntry->getVideoTitle(),
 	'YouTubeID' => $videoEntry->getVideoId(),
+	'UploadDate' =>
+		str_replace('T',' ',
+		str_replace('Z', '', $videoEntry->mediaGroup->uploaded->text
+		)),
+	'Channel' => $channel,
+	'Creator' => (in_array($channel, $greyChannels) ? "C.G.P. Grey" : "Brady Haran"),
 	'ViewCount' => $videoEntry->getVideoViewCount(),
-	'Channel' => $channel
-	'UploadDate' => $videoEntry->mediaGroup->uploaded->text,
 	);
 	
-	if (GREY_CHANNELS[$channel])
-	{
-		$ret["Creator"] = "C.G.P. Grey";
-	}
-	else
-	{
-		$ret["Creator"] = "Brady Haran";
-	} 
-	
-	return $ret;
 }
-function getUploads(channel)
+function getUploads($channel, $maxNum = 25)
 {
+	global $yt;
+	
 	$ret = array( );
 	$videoFeed = $yt->getUserUploads($channel);
 	
 	foreach($videoFeed as $vid)
 	{
-		$ret.push(vidEntryToArray($vid));
+		array_push($ret, vidEntryToArray($vid, $channel));
+		if (count($ret) >= $maxNum)
+		{
+			break;
+		}
 	}
 	
 	return $ret;
 }
+
+$vids = array( );
+
+foreach ($greyChannels as $channel)
+{
+	$vids = array_merge($vids, getUploads($channel, 1));
+}
+foreach ($bradyChannels as $channel)
+{
+	$vids = array_merge($vids, getUploads($channel, 20));
+}
+
+foreach ($vids as $vid)
+{
+	// If this video is already in the database, delete it (we need the updated view count)
+	addVideoReplacing($vid);
+}
+
+// Delete unnecessary videos from both creators.
+deleteExtraneousVids();
+
+// Record the time
+recordUpdate();
 
 echo "Done!";
 ?>
