@@ -3,10 +3,19 @@
 //ini_set("display_errors", "On"); // For debugging errors
 // header("Content-Type: text/plain"); // For debugging with print_r
 
+// Get the API key from my file
+$key_file = fopen('api_key.txt', 'r');
+$api_key = fread($key_file, 39);
+fclose($key_file);
+
+require_once "secret_stuff.php";
+
 // Some handy SQL functions
 function sqlWithRet($q)
 {
-	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db", 8889);
+	global $sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port;
+	$sql_connection = mysqli_connect($sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port);
+	
 	if (mysqli_connect_errno())
 	{
 		$n = mysqli_connect_errno();
@@ -33,7 +42,9 @@ function sqlWithRet($q)
 }
 function sqlWithoutRet($query)
 {
-	$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db", 8889);
+	global $sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port;
+	$sql_connection = mysqli_connect($sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port);
+	
 	if (mysqli_connect_errno())
 	{
 		$n = mysqli_connect_errno();
@@ -52,10 +63,13 @@ function sqlWithoutRet($query)
 
 function addVideoReplacing($unescapedVid)
 {
+	global $sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port;
+	$sql_connection = mysqli_connect($sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port);
+	
 	$vid = array();
 	foreach ($unescapedVid as $property => $value)
 	{
-		$vid[$property] = mysql_real_escape_string($value);
+		$vid[$property] = mysqli_real_escape_string($sql_connection, $value);
 	}
 	
 	sqlWithoutRet("DELETE FROM Video WHERE YouTubeID='{$vid['YouTubeID']}'");
@@ -75,11 +89,6 @@ function recordUpdate()
 	// sqlWithoutRet("DELETE FROM UpdateLog"); // Taylor's idea
 	sqlWithoutRet("INSERT INTO UpdateLog () VALUES ()");
 }
-
-// Get the API key from my file
-$key_file = fopen('api_key.txt', 'r');
-$api_key = fread($key_file, 39);
-fclose($key_file);
 
 // The API needs its library in the include_path.
 set_include_path(
