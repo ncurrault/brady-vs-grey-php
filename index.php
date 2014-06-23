@@ -15,33 +15,7 @@
 		}
 	</script>
 	<?php
-		function sql_query($q)
-		{
-			$sql_connection = mysqli_connect($host="localhost", "root", "root", "my_db", 8889);
-			if (mysqli_connect_errno())
-			{
-				$n = mysqli_connect_errno();
-				echo "Error with database (error number $n)";
-				return null;
-			}
-			else
-			{
-				$q_result = mysqli_query($sql_connection,$q);
-				$q_len = $q_result->num_rows;
-				
-				$ret = array();
-				
-				for ($i=0; $i<$q_len; $i++)
-				{
-					$row = mysqli_fetch_array($q_result);
-					array_push($ret, $row);
-				}
-				
-				mysqli_close($sql_connection);
-				
-				return $ret;
-			}
-		}
+		require_once "sql_functions.php";
 	?>
 </head>
 <body>
@@ -156,7 +130,7 @@ A:
 </table>
 
 <hr />
-Last updated: <?php echo sql_query("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; ?>.
+Last updated: <?php echo sqlWithRet("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; ?>.
 Powered by YouTube Data API (v3).
 <hr />
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>

@@ -10,66 +10,13 @@ fclose($key_file);
 
 require_once "secret_stuff.php";
 
-// Some handy SQL functions
-function sqlWithRet($q)
-{
-	global $sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port;
-	$sql_connection = mysqli_connect($sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port);
-	
-	if (mysqli_connect_errno())
-	{
-		$n = mysqli_connect_errno();
-		echo "Error with database (error number $n)";
-		return null;
-	}
-	else
-	{
-		$q_result = mysqli_query($sql_connection,$q);
-		$q_len = $q_result->num_rows;
-		
-		$ret = array();
-		
-		for ($i=0; $i<$q_len; $i++)
-		{
-			$row = mysqli_fetch_array($q_result);
-			array_push($ret, $row);
-		}
-		
-		mysqli_close($sql_connection);
-	
-		return $ret;
-	}
-}
-function sqlWithoutRet($query)
-{
-	global $sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port;
-	$sql_connection = mysqli_connect($sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port);
-	
-	if (mysqli_connect_errno())
-	{
-		$n = mysqli_connect_errno();
-		echo "Error with database (error number $n)";
-	}
-	else
-	{
-		$q = mysqli_query($sql_connection,$query);
-		
-		if (!$q)
-		{
-			echo "Error with query: <pre><code>$query</code></pre><br />";
-		}
-	}
-}
 
 function addVideoReplacing($unescapedVid)
-{
-	global $sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port;
-	$sql_connection = mysqli_connect($sql_host, $sql_username, $sql_password, $sql_db_name, $sql_port);
-	
+{	
 	$vid = array();
 	foreach ($unescapedVid as $property => $value)
 	{
-		$vid[$property] = mysqli_real_escape_string($sql_connection, $value);
+		$vid[$property] = sql_escape($value);
 	}
 	
 	sqlWithoutRet("DELETE FROM Video WHERE YouTubeID='{$vid['YouTubeID']}'");
