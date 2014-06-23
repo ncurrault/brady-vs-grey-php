@@ -16,6 +16,7 @@
 	</script>
 	<?php
 		require_once "sql_functions.php";
+		require_once "update.php";
 	?>
 </head>
 <body>
@@ -130,7 +131,7 @@ A:
 </table>
 
 <hr />
-Last updated: <?php echo sqlWithRet("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; ?>.
+Last updated: <?php $lastUpdate = sqlWithRet("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; echo $lastUpdate; ?> UTC.
 Powered by YouTube Data API (v3).
 <hr />
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
@@ -138,3 +139,15 @@ Powered by YouTube Data API (v3).
 <iframe style="width: 100%; border: 0;" src="https://dl.dropboxusercontent.com/u/23230235/For%20Other%20Websites/brady_vs_grey_messages.html"></iframe>
 </body>
 </html>
+
+<?php
+flush(); // Send the output to the user (this will prevent the long load time.)
+
+$now = time();
+$lastUpdate = strtotime($lastUpdate);
+
+if (($now - $lastUpdate) >= 21600 || ($now % 86400 == 0)) // Update when the time is midnight or it's been >= 6 hours since the last update.
+{
+	update_with_api();	
+}
+?>
