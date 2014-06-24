@@ -12,6 +12,11 @@
 		ga('create', 'UA-50387911-2', 'brady-vs-grey.herokuapp.com');
 		ga('send', 'pageview');
 	</script>
+	<?php
+		require_once "sql_functions.php";
+		require_once "update.php";
+	?>
+	
 	<script>
 		function revealThings ()
 		{
@@ -23,10 +28,7 @@
 			button.parentNode.removeChild(button);	
 		}
 	</script>
-	<?php
-		require_once "sql_functions.php";
-		require_once "update.php";
-	?>
+	<link rel="stylesheet" type="text/css" href="main.css" />
 </head>
 <body>
 <font size="5">Q: How many videos has Brady Haran released since C.G.P. Grey last released a video?<br />
@@ -142,7 +144,7 @@ Powered by YouTube Data API (v2).
 <hr />
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
 <br />
-<iframe style="width: 100%; border: 0;" src="https://dl.dropboxusercontent.com/u/23230235/For%20Other%20Websites/brady_vs_grey_messages.html"></iframe>
+<iframe style="width: 100%; border: 0;" src="https://dl.dropboxusercontent.com/u/23230235/For%20Other%20Websites/brady_vs_grey_php_messages.html"></iframe>
 </body>
 </html>
 
