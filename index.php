@@ -25,13 +25,13 @@ A:
 </font>
 <span style="font-size: 100px;">
 <?php
-	$grey_vid = sqlWithRet("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
+	$grey_vid = sqlQuery("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
 	if (!$grey_vid) // The database is urgently in need of an update.
 	{
 		update_with_api();
-		$grey_vid = sqlWithRet("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
+		$grey_vid = sqlQuery("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
 	}	
-	$brady_vids = sqlWithRet("SELECT * FROM Video WHERE Creator='Brady Haran' AND UploadDate > '" . $grey_vid["UploadDate"] . "' ORDER BY UploadDate DESC");
+	$brady_vids = sqlQuery("SELECT * FROM Video WHERE Creator='Brady Haran' AND UploadDate > $1 ORDER BY UploadDate DESC", $grey_vid["UploadDate"]);
 	
 	echo count($brady_vids);
 ?></span>
@@ -136,7 +136,7 @@ A:
 </table>
 
 <hr />
-Last updated: <?php $lastUpdate = sqlWithRet("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; echo $lastUpdate; ?> UTC.
+Last updated: <?php $lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; echo $lastUpdate; ?> UTC.
 Powered by YouTube Data API (v3).
 <hr />
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>

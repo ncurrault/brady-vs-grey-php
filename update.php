@@ -20,30 +20,34 @@ $bradyChannels = array(
 
 function addVideoReplacing($unescapedVid)
 {	
-	$vid = array();
-	foreach ($unescapedVid as $property => $value)
-	{
-		$vid[$property] = sql_escape($value);
-	}
+	$vid = array(
+		$unescapedVid["Title"],
+		$unescapedVid["YouTubeID"],
+		$unescapedVid["UploadDate"],
+		$unescapedVid["Channel"],
+		$unescapedVid["Creator"],
+		$unescapedVid["ViewCount"]
+	);
 	
-	sqlWithoutRet("DELETE FROM Video WHERE YouTubeID='{$vid['YouTubeID']}'");
+	sqlQuery("DELETE FROM Video WHERE YouTubeID=$1", array($unescapedVid["YouTubeID"]) );
 	
-	sqlWithoutRet("INSERT INTO
+	sqlQuery("INSERT INTO
 		Video (Title, YouTubeID, UploadDate, Channel, Creator, ViewCount)
-		VALUES ('{$vid['Title']}', '{$vid['YouTubeID']}', '{$vid['UploadDate']}', '{$vid['Channel']}', '{$vid['Creator']}', {$vid['ViewCount']} )"
+		VALUES ($1, $2, $3, $4, $5, $6 )", 
+		$vid
 	);
 }
 function deleteExtraneousVids()
 {
-	$latestGreyDate = sqlWithRet("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0]['UploadDate'];
-	sqlWithoutRet("DELETE FROM Video WHERE UploadDate < '$latestGreyDate'"); 
+	$latestGreyDate = sqlQuery("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0]['UploadDate'];
+	sqlQuery("DELETE FROM Video WHERE UploadDate < $1", array($latestGreyDate)); 
 }
 function recordUpdate()
 {
-	// sqlWithoutRet("DELETE FROM UpdateLog"); // Taylor's idea
+	// sqlQuery("DELETE FROM UpdateLog"); // Taylor's idea
 	$now = strftime("%F %T");
 	
-	sqlWithoutRet("INSERT INTO UpdateLog (UpdateDatetime) VALUES ('$now')");
+	sqlQuery("INSERT INTO UpdateLog (UpdateDatetime) VALUES ($1)", array($now));
 }
 
 // Functions for getting videos from the API and putting them in arrays
