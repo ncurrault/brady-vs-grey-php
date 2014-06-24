@@ -137,7 +137,7 @@ A:
 
 <hr />
 Last updated: <?php $lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime']; echo $lastUpdate; ?> UTC.
-Powered by YouTube Data API (v3).
+Powered by YouTube Data API (v2).
 <hr />
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
 <br />
