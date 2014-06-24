@@ -6,13 +6,12 @@
 	<script>
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-50387911-2', 'brady-vs-grey.herokuapp.com');
-  ga('send', 'pageview');
-
-</script>
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		
+		ga('create', 'UA-50387911-2', 'brady-vs-grey.herokuapp.com');
+		ga('send', 'pageview');
+	</script>
 	<script>
 		function revealThings ()
 		{
@@ -56,8 +55,9 @@ A:
 	</thead>
 	<?php 
 	
-		foreach (array_merge(array($grey_vid), $brady_vids) as $vid)
+		for ($i=0; $i<count($brady_vids) + 1; $i++)
 		{
+			$vid = array_merge(array($grey_vid), $brady_vids)[$i];
 			$creator = $vid['creator'];
 			$channel = $vid['channel'];
 			$uploaded = $vid['uploaddate'];
@@ -85,12 +85,13 @@ A:
 				$views = "&lt;error&gt;"; // This should REALLY never happen
 			}
 	
+			$bg = $i%2==0 ? 'background-color: #ffffff;' : 'background-color: #eeeeee;';
 			
-			echo "<tr>
+			echo "<tr style=\"$bg\">
 			<td>$creator</td>
 			<td>$channel</td>
 			<td>$uploaded</td>
-			<td style = \"text-align: right\">$views</td>
+			<td style=\"text-align: right;\">$views</td>
 			<td><a href=\"$url\">$title</a></td>
 			</tr>";
 		}
