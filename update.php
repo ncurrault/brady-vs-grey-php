@@ -21,25 +21,25 @@ $bradyChannels = array(
 function addVideoReplacing($unescapedVid)
 {	
 	$vid = array(
-		$unescapedVid["Title"],
-		$unescapedVid["YouTubeID"],
-		$unescapedVid["UploadDate"],
-		$unescapedVid["Channel"],
-		$unescapedVid["Creator"],
-		$unescapedVid["ViewCount"]
+		$unescapedVid["title"],
+		$unescapedVid["youtubeid"],
+		$unescapedVid["uploaddate"],
+		$unescapedVid["channel"],
+		$unescapedVid["creator"],
+		$unescapedVid["viewcount"]
 	);
 	
-	sqlQuery("DELETE FROM Video WHERE YouTubeID=$1", array($unescapedVid["YouTubeID"]) );
+	sqlQuery("DELETE FROM Video WHERE youtubeid=$1", array($unescapedVid["youtubeid"]) );
 	
 	sqlQuery("INSERT INTO
-		Video (Title, YouTubeID, UploadDate, Channel, Creator, ViewCount)
+		Video (title, youtubeid, uploaddate, channel, creator, viewcount)
 		VALUES ($1, $2, $3, $4, $5, $6 )", 
 		$vid
 	);
 }
 function deleteExtraneousVids()
 {
-	$latestGreyDate = sqlQuery("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0]['UploadDate'];
+	$latestGreyDate = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0]['uploaddate'];
 	sqlQuery("DELETE FROM Video WHERE UploadDate < $1", array($latestGreyDate)); 
 }
 function recordUpdate()
@@ -47,7 +47,7 @@ function recordUpdate()
 	// sqlQuery("DELETE FROM UpdateLog"); // Taylor's idea
 	$now = strftime("%F %T");
 	
-	sqlQuery("INSERT INTO UpdateLog (UpdateDatetime) VALUES ($1)", array($now));
+	sqlQuery("INSERT INTO UpdateLog (updatedatetime) VALUES ($1)", array($now));
 }
 
 // Functions for getting videos from the API and putting them in arrays
@@ -55,15 +55,15 @@ function vidEntryToArray($videoEntry, $channel)
 {
 	global $greyChannels, $bradyChannels;
 	return array(
-	'Title' => $videoEntry->getVideoTitle(),
-	'YouTubeID' => $videoEntry->getVideoId(),
-	'UploadDate' =>
+	'title' => $videoEntry->getVideoTitle(),
+	'youtubeid' => $videoEntry->getVideoId(),
+	'uploaddate' =>
 		str_replace('T',' ',
 		str_replace('Z', '', $videoEntry->mediaGroup->uploaded->text
 		)),
-	'Channel' => $channel,
-	'Creator' => (in_array($channel, $greyChannels) ? "C.G.P. Grey" : "Brady Haran"),
-	'ViewCount' => $videoEntry->getVideoViewCount(),
+	'channel' => $channel,
+	'creator' => (in_array($channel, $greyChannels) ? "C.G.P. Grey" : "Brady Haran"),
+	'viewcount' => $videoEntry->getVideoViewCount(),
 	);
 }
 function getUploads($channel, $maxNum = 25)

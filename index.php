@@ -25,13 +25,13 @@ A:
 </font>
 <span style="font-size: 100px;">
 <?php
-	$grey_vid = sqlQuery("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
+	$grey_vid = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0];
 	if (!$grey_vid) // The database is urgently in need of an update.
 	{
 		update_with_api();
-		$grey_vid = sqlQuery("SELECT * FROM Video WHERE Creator='C.G.P. Grey' ORDER BY UploadDate DESC LIMIT 1")[0];
+		$grey_vid = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0];
 	}	
-	$brady_vids = sqlQuery("SELECT * FROM Video WHERE Creator='Brady Haran' AND UploadDate > $1 ORDER BY UploadDate DESC", $grey_vid["UploadDate"]);
+	$brady_vids = sqlQuery("SELECT * FROM Video WHERE creator='Brady Haran' AND uploaddate > $1 ORDER BY uploaddate DESC", array($grey_vid["uploaddate"]));
 	
 	echo count($brady_vids);
 ?></span>
@@ -58,14 +58,14 @@ A:
 	
 		foreach (array_merge(array($grey_vid), $brady_vids) as $vid)
 		{
-			$creator = $vid['Creator'];
-			$channel = $vid['Channel'];
-			$uploaded = $vid['UploadDate'];
+			$creator = $vid['creator'];
+			$channel = $vid['channel'];
+			$uploaded = $vid['uploaddate'];
 			$uploaded = strftime('%B %d, %Y @ %I:%M %p', strtotime($uploaded) );
 			
-			$views = $vid['ViewCount'];
-			$title = $vid['Title'];
-			$url = "http://youtu.be/" . $vid['YouTubeID'];
+			$views = $vid['viewcount'];
+			$title = $vid['title'];
+			$url = "http://youtu.be/" . $vid['youtubeid'];
 			
 			if ($views == 301)
 			{
@@ -102,7 +102,7 @@ A:
 <table cellpadding="3" cellspacing="3">
 	<tr>
 		<td>Grey</td>
-		<td align="right"><?php $grey_views = $grey_vid['ViewCount']; echo $grey_views; ?></td>
+		<td align="right"><?php $grey_views = $grey_vid['viewcount']; echo $grey_views; ?></td>
 	</tr>
 	<tr>
 		<td>Brady: Average</td>
@@ -117,7 +117,7 @@ A:
 				$brady_total = 0;
 				foreach ($brady_vids as $vid)
 				{
-					$brady_total = $brady_total + $vid['ViewCount'];
+					$brady_total = $brady_total + $vid['viewcount'];
 				}
 				
 				echo round( $brady_total / count($brady_vids) );
@@ -136,7 +136,7 @@ A:
 </table>
 
 <hr />
-Last updated: <?php $lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY UpdateDatetime DESC LIMIT 1")[0]['UpdateDatetime']; echo $lastUpdate; ?> UTC.
+Last updated: <?php $lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime']; echo $lastUpdate; ?> UTC.
 Powered by YouTube Data API (v3).
 <hr />
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
