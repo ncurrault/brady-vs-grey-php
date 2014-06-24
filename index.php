@@ -37,23 +37,13 @@ A:
 ?></span>
 <br /><hr /><br />
 <table cellpadding="5" cellspacing="5">
-	<tr>
-		<td><strong>
-			Creator
-		</strong></td>
-		<td><strong>
-			Channel
-		</strong></td>
-		<td><strong>
-			Uploaded
-		</strong></td>
-		<td><strong>
-			View Count
-		</strong></td>
-		<td><strong>
-			Title/Link
-		</strong></td>
-	</tr>
+	<thead>
+		<th>Creator</th>
+		<th>Channel</th>
+		<th>Uploaded</th>
+		<th>View Count</th>
+		<th>Title/Link</th>
+	</thead>
 	<?php 
 	
 		foreach (array_merge(array($grey_vid), $brady_vids) as $vid)
@@ -90,7 +80,7 @@ A:
 			<td>$creator</td>
 			<td>$channel</td>
 			<td>$uploaded</td>
-			<td>$views</td>
+			<td style = \"text-align: right\">$views</td>
 			<td><a href=\"$url\">$title</a></td>
 			</tr>";
 		}
