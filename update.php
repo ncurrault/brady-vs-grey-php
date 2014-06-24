@@ -7,7 +7,7 @@
 require_once "sql_functions.php";
 
 // for the API key
-require_once "secret_stuff.php";
+$api_key = $_ENV["YOUTUBE_API_KEY"];
 
 $greyChannels = array(
 'CGPGrey', 'CGPGrey2', 'greysfavs');
