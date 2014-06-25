@@ -207,10 +207,12 @@
 	?>
 
 <div class="mainSection" id="videoList">
-	<h2 class="row">
+<div class="row">
+	<h2 class="row col-sm-10 col-xs-6"> 
 		Grey's video
 	</h2>
-	
+	<div class="col-sm-2 col-xs-6"></div>
+</div>
 	<div class="row table-head">
 		<div class="col-sm-2 col-sm-3">Channel</div>
 		<div class="col-sm-3 col-sm-4 col-xs-8">Published</div>
@@ -243,7 +245,10 @@
 </div>
 
 <div class="mainSection" id="viewCountCompare">
-<h1 class="row">How do their view counts compare?</h1>
+<div class="row">
+	<h1 class="row col-sm-10 col-xs-6"> How do their view counts compare?</h1>
+	<div class="col-sm-2 col-xs-6"></div>
+</div>
 
 <div class="row tableRowEven">
 	<div class="col-xs-6">Grey</div>
@@ -284,7 +289,11 @@
 
 
 <div id="appInfo" class="mainSection">
-<h1 class="row">App info</h1>
+<div class="row">
+	<h1 class="row col-sm-10 col-xs-6">App info</h1>
+	<div class="col-sm-2 col-xs-6"></div>
+</div>
+
 <h3 class="row">Last Updated</h3>
 <h4 class="row">
 	<?php
@@ -303,7 +312,7 @@
 
 </div>
 
-<a id="backButton" class="btn btn-primary btn-lg" href="#">Return to top.</a>
+<a id="backButton" class="col-sm-2 col-xs-6 btn btn-primary btn-lg" href="#">Return to top.</a>
 </body>
 </html>
 

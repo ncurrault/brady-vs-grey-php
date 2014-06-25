@@ -12,7 +12,7 @@ html, body
 	text-align: center;
 }
 
-#videoList > .row > *:first-child
+#videoList > .row > div:first-child
 {
 	font-style: italic;
 }
