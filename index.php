@@ -60,9 +60,9 @@
 	echo count($brady_vids);
 ?></h1>
 <h2>
-	<a class="btn btn-primary btn-lg" href="#videoList">List the videos.</a>
-	<a class="btn btn-primary btn-lg" href="#viewCountCompare">Compare the view counts.</a>
-	<a class="btn btn-primary btn-lg" href="#appInfo">View the app's info.</a>
+	<a class="btn btn-success btn-lg" href="#videoList">List the videos.</a>
+	<a class="btn btn-warning btn-lg" href="#viewCountCompare">Compare the view counts.</a>
+	<a class="btn btn-danger btn-lg" href="#appInfo">View the app's info.</a>
 </h2>
 </div>
 
@@ -171,7 +171,7 @@
 	</tr>
 	<tr id="hidden-stuff-toggle" <?php if ($brady_total < $grey_views) echo "hidden"; ?> >
 		<td colspan="2">
-			<button onclick="revealThings();">Grey, don't click here!</button>
+			<button class="btn btn-danger btn-lg" onclick="revealThings();">Grey, don't click here!</button>
 		</td>
 	</tr>
 	<tr class="hidden-to-grey" <?php if ($brady_total >= $grey_views) echo "hidden"; ?> >
