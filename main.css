@@ -1,1 +1,57 @@
-/* I'll start this later */
+.mainSection
+{
+	height: 100%;
+}
+
+html
+{
+	height: 100%;
+}
+body
+{
+	height: 100%;
+}
+#theNumber
+{
+	font-size: 2500%;
+	text-align: center;
+}
+
+#videoList table
+{
+	margin-left: 5%;
+}
+#videoList td, #videoList th
+{
+	margin: 5px;
+	padding: 5px;
+}
+.tableRowEven
+{
+	background-color: #eeeeee;
+}
+.tableRowOdd
+{
+	background-color: #ffffff;
+}
+
+#viewCountCompare td, #viewCountCompare th
+{
+	margin: 3px;
+	padding: 3px;
+}
+#viewCountCompare table
+{
+	margin-left: 5%;
+	font-size: 36px;
+	vertical-align: center;
+}
+
+
+#backButton
+{
+	display: block;
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+}

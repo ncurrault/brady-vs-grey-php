@@ -28,13 +28,26 @@
 			button.parentNode.removeChild(button);	
 		}
 	</script>
-	<link rel="stylesheet" type="text/css" href="main.css" />
+	
+	<!-- Bootstrap -->
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    
+    <!-- For what I don't like -->
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
-<font size="5">Q: How many videos has Brady Haran released since C.G.P. Grey last released a video?<br />
-A:
-</font>
-<span style="font-size: 100px;">
+<div class="jumbotron mainSection" id="mainCounterJumbotron">
+<h3>How many videos has Brady Haran released since C.G.P. Grey last released a video?</h3>
+<h1 id="theNumber">
 <?php
 	$grey_vid = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0];
 	if (!$grey_vid) // The database is urgently in need of an update.
@@ -45,21 +58,17 @@ A:
 	$brady_vids = sqlQuery("SELECT * FROM Video WHERE creator='Brady Haran' AND uploaddate > $1 ORDER BY uploaddate DESC", array($grey_vid["uploaddate"]));
 	
 	echo count($brady_vids);
-?></span>
-<br /><hr /><br />
-<table cellpadding="5" cellspacing="5">
-	<thead>
-		<th>Creator</th>
-		<th>Channel</th>
-		<th>Published</th>
-		<th>View Count</th>
-		<th>Title/Link</th>
-	</thead>
-	<?php 
-	
-		for ($i=0; $i<count($brady_vids) + 1; $i++)
+?></h1>
+<h2>
+	<a class="btn btn-primary btn-lg" href="#videoList">List the videos.</a>
+	<a class="btn btn-primary btn-lg" href="#viewCountCompare">Compare the view counts.</a>
+	<a class="btn btn-primary btn-lg" href="#appInfo">View the app's info.</a>
+</h2>
+</div>
+
+	<?php
+		function echoVidRow($vid, $isEven)
 		{
-			$vid = array_merge(array($grey_vid), $brady_vids)[$i];
 			$creator = $vid['creator'];
 			$channel = $vid['channel'];
 			$uploaded = $vid['uploaddate'];
@@ -87,10 +96,9 @@ A:
 				$views = "&lt;error&gt;"; // This should REALLY never happen
 			}
 	
-			$bg = $i%2==0 ? 'background-color: #ffffff;' : 'background-color: #eeeeee;';
+			$rowClass = $isEven ? 'tableRowEven' : 'tableRowOdd';
 			
-			echo "<tr style=\"$bg\">
-			<td>$creator</td>
+			echo "<tr class=\"$rowClass\">
 			<td>$channel</td>
 			<td>$uploaded</td>
 			<td style=\"text-align: right;\">$views</td>
@@ -98,11 +106,45 @@ A:
 			</tr>";
 		}
 	?>
-</table>
-<hr>
-<font size="5">Q: How do their view counts compare?<br />A:</font>
 
-<table cellpadding="3" cellspacing="3">
+<div class="mainSection" id="videoList">
+	<h2>
+		Grey's video
+	</h2>
+<table>
+	<thead>
+		<th>Channel</th>
+		<th>Published</th>
+		<th>View Count</th>
+		<th>Title/Link</th>
+	</thead>
+	
+	<?php echoVidRow($grey_vid, false); ?>
+</table>
+<h2>
+	Brady's video(s)
+</h2>
+<table>
+	<thead>
+		<th>Channel</th>
+		<th>Published</th>
+		<th>View Count</th>
+		<th>Title/Link</th>
+	</thead>
+	
+	<?php
+		for ($i = 0; $i<count($brady_vids); $i++)
+		{
+			echoVidRow($brady_vids[$i], ($i % 2 == 0));
+		}
+	?>
+</table>
+</div>
+
+<div class="mainSection" id="viewCountCompare">
+<h1>How do their view counts compare?</h1>
+
+<table>
 	<tr>
 		<td>Grey</td>
 		<td align="right"><?php $grey_views = $grey_vid['viewcount']; echo $grey_views; ?></td>
@@ -138,13 +180,27 @@ A:
 	</tr>
 </table>
 
-<hr />
-Last updated: <?php $lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime']; echo $lastUpdate; ?> UTC.
-Powered by YouTube Data API (v2).
-<hr />
+</div>
+
+
+<div id="appInfo" class="mainSection">
+<h1>App info</h1>
+<h3>Last Updated</h3>
+<h4>
+	<?php
+		$lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime']; echo $lastUpdate;
+	?> UTC
+</h4>
+
+<h3>Powered by YouTube Data API (v2)</h3>
+<h3>
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
-<br />
+</h3>
+
 <iframe style="width: 100%; border: 0;" src="https://dl.dropboxusercontent.com/u/23230235/For%20Other%20Websites/brady_vs_grey_php_messages.html"></iframe>
+</div>
+
+<a id="backButton" class="btn btn-primary btn-lg" href="#">Return to top.</a>
 </body>
 </html>
 
