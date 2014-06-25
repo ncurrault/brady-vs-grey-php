@@ -97,11 +97,10 @@
 	</script>
 
 </head>
-<body>
+<body class="container-fluid">
 <div class="jumbotron mainSection" id="mainCounterJumbotron">
-<h3>How many videos has Brady Haran released since C.G.P. Grey last released a video?</h3>
-<h1 id="theNumber" data-number="
-<?php
+<h3 class="row">How many videos has Brady Haran released since C.G.P. Grey last released a video?</h3>
+<h1 class="row" id="theNumber" data-number="<?php
 	$grey_vid = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0];
 	if (!$grey_vid) // The database is urgently in need of an update.
 	{
@@ -112,7 +111,7 @@
 	
 	echo count($brady_vids);
 ?>"><noscript><?php echo count($brady_vids); ?></noscript></h1>
-<h2>
+<h2 class="row">
 	<a class="btn btn-success btn-lg" href="#videoList">List the videos.</a>
 	<a class="btn btn-warning btn-lg" href="#viewCountCompare">Compare the view counts.</a>
 	<a class="btn btn-danger btn-lg" href="#appInfo">View the app's info.</a>
@@ -149,46 +148,44 @@
 				$views = "&lt;error&gt;"; // This should REALLY never happen
 			}
 	
-			$rowClass = $isEven ? 'tableRowEven' : 'tableRowOdd';
+			$classForShading = $isEven ? 'tableRowEven' : 'tableRowOdd';
 			
-			echo "<tr class=\"$rowClass\">
-			<td>$channel</td>
-			<td>$uploaded</td>
-			<td style=\"text-align: right;\">$views</td>
-			<td><a href=\"$url\">$title</a></td>
-			</tr>";
+			echo "<div class='row $classForShading'>
+			<div class='col-sm-2 col-xs-3'>$channel</div>
+			<div class='col-sm-3 col-xs-4'>$uploaded</div>
+			<div class='col-md-1 col-xs-2 right-align'>$views</div>
+			<div class='col-md-6 col-sm-5 col-xs-3'><a href='$url'>$title</a></div>
+			</div>";
 		}
 	?>
 
 <div class="mainSection" id="videoList">
-	<h2>
+	<h2 class="row">
 		Grey's video
 	</h2>
-<table>
-	<thead>
-		<th>Channel</th>
-		<th>Published</th>
-		<th>View Count</th>
-		<th>Title/Link</th>
-	</thead>
 	
+	<div class="row table_head">
+		<div class="col-sm-2 col-xs-3">Channel</div>
+		<div class="col-sm-3 col-xs-4">Published</div>
+		<div class="col-md-1 col-xs-2">Views</div>
+		<div class="col-md-6 col-sm-5 col-xs-3">Title/Link</div>
+	</div>	
 	<?php echoVidRow($grey_vid, true); ?>
-</table>
-<h2>
-	Brady's <?php
-	if (count($brady_vids) == 0) echo "lack of videos";
-	else if (count($brady_vids) == 1) echo "video";
-	else echo "videos";
-	?>
+
+	<h2 class="row">
+		Brady's <?php
+		if (count($brady_vids) == 0) echo "lack of videos";
+		else if (count($brady_vids) == 1) echo "video";
+		else echo "videos";
+		?>
+	</h2>
 	
-</h2>
-<table>
-	<thead>
-		<th>Channel</th>
-		<th>Published</th>
-		<th>View Count</th>
-		<th>Title/Link</th>
-	</thead>
+	<div class="row table_head">
+		<div class="col-sm-2 col-xs-3">Channel</div>
+		<div class="col-sm-3 col-xs-4">Published</div>
+		<div class="col-md-1 col-xs-2">Views</div>
+		<div class="col-md-6 col-sm-5 col-xs-3">Title/Link</div>
+	</div>
 	
 	<?php
 		for ($i = 0; $i<count($brady_vids); $i++)
@@ -196,20 +193,18 @@
 			echoVidRow($brady_vids[$i], ($i % 2 == 0));
 		}
 	?>
-</table>
 </div>
 
 <div class="mainSection" id="viewCountCompare">
-<h1>How do their view counts compare?</h1>
+<h1 class="row">How do their view counts compare?</h1>
 
-<table>
-	<tr>
-		<td>Grey</td>
-		<td align="right"><?php $grey_views = $grey_vid['viewcount']; echo $grey_views; ?></td>
-	</tr>
-	<tr>
-		<td>Brady: Average</td>
-		<td align="right">
+<div class="row tableRowEven">
+	<div class="col-xs-6">Grey</div>
+	<div class="col-xs-6 right-align"><?php $grey_views = $grey_vid['viewcount']; echo $grey_views; ?></div>
+</div>
+<div class="row tableRowOdd">
+	<div class="col-xs-6">Brady: Average</div>
+	<div class="col-xs-6 right-align">
 		<?php
 			if (count($brady_vids) == 0)
 			{
@@ -225,37 +220,37 @@
 				
 				echo round( $brady_total / count($brady_vids) );
 			}
-		?></td>
-	</tr>
-	<tr id="hidden-stuff-toggle" <?php if ($brady_total < $grey_views) echo "hidden"; ?> >
-		<td colspan="2">
-			<button class="btn btn-danger btn-lg" onclick="revealThings();">Grey, don't click here!</button>
-		</td>
-	</tr>
-	<tr class="hidden-to-grey" <?php if ($brady_total >= $grey_views) echo "hidden"; ?> >
-		<td>Brady: Total</td>
-		<td align="right"><?php echo $brady_total; ?></td>
-	</tr>
-</table>
+		?>
+	</div>
+</div>
+<div class="row" id="hidden-stuff-toggle" <?php if ($brady_total < $grey_views) echo "hidden"; ?> >
+	<div class="col-xs-12 center-align">
+		<button class="btn btn-danger btn-lg" onclick="revealThings();">Grey, don't click here!</button>
+	</div>
+</div>
+<div class="row hidden-to-grey tableRowEven" <?php if ($brady_total >= $grey_views) echo "hidden"; ?> >
+	<div class="col-xs-6">Brady: Total</div>
+	<div class="col-xs-6 right-align"><?php echo $brady_total; ?></div>
+</div>
 
 </div>
 
 
 <div id="appInfo" class="mainSection">
-<h1>App info</h1>
-<h3>Last Updated</h3>
-<h4>
+<h1 class="row">App info</h1>
+<h3 class="row">Last Updated</h3>
+<h4 class="row">
 	<?php
 		$lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime']; echo $lastUpdate;
 	?> UTC
 </h4>
 
-<h3>Powered by YouTube Data API (v2)</h3>
-<h3>
+<h3 class="row">Powered by YouTube Data API (v2)</h3>
+<h3 class="row">
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
 </h3>
 
-<iframe style="width: 100%; border: 0;" src="https://dl.dropboxusercontent.com/u/23230235/For%20Other%20Websites/brady_vs_grey_php_messages.html"></iframe>
+<iframe class="row col-xs-12" src="https://dl.dropboxusercontent.com/u/23230235/For%20Other%20Websites/brady_vs_grey_php_messages.html"></iframe>
 </div>
 
 <a id="backButton" class="btn btn-primary btn-lg" href="#">Return to top.</a>
