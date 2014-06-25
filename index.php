@@ -16,18 +16,6 @@
 		require_once "sql_functions.php";
 		require_once "update.php";
 	?>
-	
-	<script>
-		function revealThings ()
-		{
-			for (var i in document.getElementsByClassName('hidden-to-grey'))
-			{
-				document.getElementsByClassName('hidden-to-grey')[i].hidden = false;
-			}
-			var button = document.getElementById('hidden-stuff-toggle');
-			button.parentNode.removeChild(button);	
-		}
-	</script>
 		
 	<!-- Bootstrap -->
 	<meta charset="utf-8">
@@ -120,25 +108,42 @@
 		{
 			$(document).scroll(function ()
 			{
-				if ($(document).scrollTop() < $(window).height())
+				var winHeight = $(window).height();
+				var scrollPos = $(document).scrollTop();
+				
+				if (scrollPos < winHeight)
 				{
-					$("#backButton").hide()
+					$("#backButton").css({"opacity": scrollPos/winHeight })
 				}
 				else
 				{
-					$("#backButton").show()
+					$("#backButton").css({"opacity": 1 })
 				}
 			});
+			
 		});
 		
 		// Set up smooth scrolling
 		$(function()
 		{
 			$('a').smoothScroll();
-			$("#backButton").on('click', function ()
+			$("#backButton").click(function ()
 			{
 				$.smoothScroll({scrollTarget: '#'});
 				return false;
+			});
+		});
+		
+		// For the "Grey, don't click here!" button
+		$(function()
+		{
+			$("#bradyTotalReveal").click(function revealThings ()
+			{
+				$("#bradyTotalReveal").fadeOut();
+				setTimeout(function ()
+				{
+					$(".hidden-to-grey").fadeIn();
+				}, 400);
 			});
 		});
 	</script>
@@ -275,14 +280,14 @@
 		?>
 	</div>
 </div>
-<div class="row" id="hidden-stuff-toggle" <?php if ($brady_total < $grey_views) echo "hidden"; ?> >
-	<div class="col-xs-12 center-align">
-		<button class="btn btn-danger btn-lg" onclick="revealThings();">Grey, don't click here!</button>
-	</div>
-</div>
 <div class="row hidden-to-grey tableRowEven" <?php if ($brady_total >= $grey_views) echo "hidden"; ?> >
 	<div class="col-xs-6">Brady: Total</div>
 	<div class="col-xs-6 right-align"><?php echo $brady_total; ?></div>
+</div>
+<div class="row" id="hidden-stuff-toggle" <?php if ($brady_total < $grey_views) echo "hidden"; ?> >
+	<div class="col-xs-12 center-align">
+		<button id="bradyTotalReveal" class="btn btn-danger btn-lg">Grey, don't click here!</button>
+	</div>
 </div>
 
 </div>
