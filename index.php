@@ -44,19 +44,22 @@
     <!-- For what I don't like -->
     <link rel="stylesheet" href="main.css">
     
+    <!-- Smooth scrolling -->
+    <script src="js/jquery.smooth-scroll.min.js"></script>
+    
     <script>
-		function getCurrentTime ()
+		// The "ease-in/ease-out" main counter
+		$(function()
 		{
-			var d = new Date();
-			return d.getTime();
-		}
-		
-		function countUpTo(elementID, timeToTake)
-		{
-			var element = document.getElementById(elementID);
-			var endNum = parseInt( element.dataset.number );
+			var element = $("#theNumber");
+			var endNum = parseInt( element.data("number") );
+			var timeToTake = 3;
 			
-			
+			function getCurrentTime ()
+			{
+				var d = new Date();
+				return d.getTime();
+			}
 			function getNumForTime(n)
 			{
 				if (n >= timeToTake)
@@ -79,7 +82,7 @@
 			var numAnimation = setInterval(function ()
 			{
 				numToSet = getNumForTime(currTime);
-				element.innerHTML = Math.round(numToSet);
+				element.html( Math.round(numToSet) );
 				
 				currTime += 1/30;
 				
@@ -87,13 +90,57 @@
 				{
 					clearInterval(numAnimation);
 				}
-			}, 1000/30)
+			}, 1000/30); // Screen refreshes only 30 times per second
 			
-			element.innerHTML = endNum;
+			element.html( endNum );
 			
 			return;
-		}
-		$( document ).ready(function() { countUpTo("theNumber", 4);});
+		});
+		
+		// Fit main text to window 	
+		$(function()
+		{			
+			function fitText()
+			{
+				$("#theNumber").css({
+					"font-size": (0.5 * $(window).height()) + "px"
+				});
+			}
+			
+			$(window).resize(function ()
+			{
+				fitText();
+			});
+			
+			fitText();
+		});
+		
+		// Hide/show "back to top" button appropriately
+		$(function()
+		{
+			$(document).scroll(function ()
+			{
+				if ($(document).scrollTop() < $(window).height())
+				{
+					$("#backButton").hide()
+				}
+				else
+				{
+					$("#backButton").show()
+				}
+			});
+		});
+		
+		// Set up smooth scrolling
+		$(function()
+		{
+			$('a').smoothScroll();
+			$("#backButton").on('click', function ()
+			{
+				$.smoothScroll({scrollTarget: '#'});
+				return false;
+			});
+		});
 	</script>
 
 </head>
@@ -151,10 +198,10 @@
 			$classForShading = $isEven ? 'tableRowEven' : 'tableRowOdd';
 			
 			echo "<div class='row $classForShading'>
-			<div class='col-sm-2 col-xs-3'>$channel</div>
-			<div class='col-sm-3 col-xs-4'>$uploaded</div>
-			<div class='col-md-1 col-xs-2 right-align'>$views</div>
-			<div class='col-md-6 col-sm-5 col-xs-3'><a href='$url'>$title</a></div>
+			<div class='col-sm-2 col-sm-3'>$channel</div>
+			<div class='col-sm-3 col-sm-4 col-xs-8'>$uploaded</div>
+			<div class='col-md-1 col-sm-2 col-xs-4 right-align'>$views</div>
+			<div class='col-md-6 col-sm-5'><a href='$url'>$title</a></div>
 			</div>";
 		}
 	?>
@@ -164,11 +211,11 @@
 		Grey's video
 	</h2>
 	
-	<div class="row table_head">
-		<div class="col-sm-2 col-xs-3">Channel</div>
-		<div class="col-sm-3 col-xs-4">Published</div>
-		<div class="col-md-1 col-xs-2">Views</div>
-		<div class="col-md-6 col-sm-5 col-xs-3">Title/Link</div>
+	<div class="row table-head">
+		<div class="col-sm-2 col-sm-3">Channel</div>
+		<div class="col-sm-3 col-sm-4 col-xs-8">Published</div>
+		<div class="col-md-1 col-sm-2 col-xs-4 right-align">Views</div>
+		<div class="col-md-6 col-sm-5">Title/Link</div>
 	</div>	
 	<?php echoVidRow($grey_vid, true); ?>
 
@@ -180,11 +227,11 @@
 		?>
 	</h2>
 	
-	<div class="row table_head">
-		<div class="col-sm-2 col-xs-3">Channel</div>
-		<div class="col-sm-3 col-xs-4">Published</div>
-		<div class="col-md-1 col-xs-2">Views</div>
-		<div class="col-md-6 col-sm-5 col-xs-3">Title/Link</div>
+	<div class="row table-head">
+		<div class="col-sm-2 col-sm-3">Channel</div>
+		<div class="col-sm-3 col-sm-4 col-xs-8">Published</div>
+		<div class="col-md-1 col-sm-2 col-xs-4 right-align">Views</div>
+		<div class="col-md-6 col-sm-5">Title/Link</div>
 	</div>
 	
 	<?php
@@ -250,7 +297,10 @@
 <a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
 </h3>
 
-<iframe class="row col-xs-12" src="https://dl.dropboxusercontent.com/u/23230235/For%20Other%20Websites/brady_vs_grey_php_messages.html"></iframe>
+<!-- NOTES HERE -->
+<h3 class="row">Notes</h3>
+<h5 class="row">To conserve processer and network resources, this app should only update four times per day.</h5>
+
 </div>
 
 <a id="backButton" class="btn btn-primary btn-lg" href="#">Return to top.</a>
