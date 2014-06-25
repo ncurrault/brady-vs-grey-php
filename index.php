@@ -28,7 +28,7 @@
 			button.parentNode.removeChild(button);	
 		}
 	</script>
-	
+		
 	<!-- Bootstrap -->
 	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -43,11 +43,64 @@
     
     <!-- For what I don't like -->
     <link rel="stylesheet" href="main.css">
+    
+    <script>
+		function getCurrentTime ()
+		{
+			var d = new Date();
+			return d.getTime();
+		}
+		
+		function countUpTo(elementID, timeToTake)
+		{
+			var element = document.getElementById(elementID);
+			var endNum = parseInt( element.dataset.number );
+			
+			
+			function getNumForTime(n)
+			{
+				if (n >= timeToTake)
+				{
+					return endNum;
+				}
+				else if (n <= 0)
+				{
+					return 0;
+				}
+				else
+				{
+					return endNum * (0.5 - 0.5 * Math.cos((Math.PI / timeToTake) * n)); // (n/timeToTake)*endNum;
+				}
+			}
+			
+			var currTime = 0;
+			var numToSet;
+			
+			var numAnimation = setInterval(function ()
+			{
+				numToSet = getNumForTime(currTime);
+				element.innerHTML = Math.round(numToSet);
+				
+				currTime += 1/30;
+				
+				if (currTime >= timeToTake)
+				{
+					clearInterval(numAnimation);
+				}
+			}, 1000/30)
+			
+			element.innerHTML = endNum;
+			
+			return;
+		}
+		$( document ).ready(function() { countUpTo("theNumber", 4);});
+	</script>
+
 </head>
 <body>
 <div class="jumbotron mainSection" id="mainCounterJumbotron">
 <h3>How many videos has Brady Haran released since C.G.P. Grey last released a video?</h3>
-<h1 id="theNumber">
+<h1 id="theNumber" data-number="
 <?php
 	$grey_vid = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0];
 	if (!$grey_vid) // The database is urgently in need of an update.
@@ -58,7 +111,7 @@
 	$brady_vids = sqlQuery("SELECT * FROM Video WHERE creator='Brady Haran' AND uploaddate > $1 ORDER BY uploaddate DESC", array($grey_vid["uploaddate"]));
 	
 	echo count($brady_vids);
-?></h1>
+?>"><noscript><?php echo count($brady_vids); ?></noscript></h1>
 <h2>
 	<a class="btn btn-success btn-lg" href="#videoList">List the videos.</a>
 	<a class="btn btn-warning btn-lg" href="#viewCountCompare">Compare the view counts.</a>
@@ -119,10 +172,15 @@
 		<th>Title/Link</th>
 	</thead>
 	
-	<?php echoVidRow($grey_vid, false); ?>
+	<?php echoVidRow($grey_vid, true); ?>
 </table>
 <h2>
-	Brady's video(s)
+	Brady's <?php
+	if (count($brady_vids) == 0) echo "lack of videos";
+	else if (count($brady_vids) == 1) echo "video";
+	else echo "videos";
+	?>
+	
 </h2>
 <table>
 	<thead>
