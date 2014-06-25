@@ -308,7 +308,7 @@
 
 <h3 class="row">Powered by YouTube Data API (v2)</h3>
 <h3 class="row">
-<a href="http://github.com/nicktendo64/brady-vs-grey">View the source code on GitHub.</a>
+<a href="http://github.com/nicktendo64/brady-vs-grey-php">View the source code on GitHub.</a>
 </h3>
 
 <!-- NOTES HERE -->
