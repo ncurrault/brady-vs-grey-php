@@ -328,10 +328,10 @@
 
 <div class="mainSection" id="videoList">
 <div class="row">
-	<h2 class="row col-sm-10 col-xs-6"> 
+	<h2 class="row col-sm-10 col-xs-7"> 
 		Grey's video
 	</h2>
-	<div class="col-sm-2 col-xs-6"></div>
+	<div class="col-sm-2 col-xs-5"></div>
 </div>
 	<div class="row table-head">
 		<div class="col-sm-2 col-sm-3">Channel</div>
@@ -366,8 +366,8 @@
 
 <div class="mainSection" id="viewCountCompare">
 <div class="row">
-	<h1 class="row col-sm-10 col-xs-6"> How do their view counts compare?</h1>
-	<div class="col-sm-2 col-xs-6"></div>
+	<h1 class="row col-sm-10 col-xs-7"> How do their view counts compare?</h1>
+	<div class="col-sm-2 col-xs-5"></div>
 </div>
 
 <?php
@@ -417,8 +417,8 @@
 
 <div id="appInfo" class="mainSection">
 <div class="row">
-	<h1 class="row col-sm-10 col-xs-6">App info</h1>
-	<div class="col-sm-2 col-xs-6"></div>
+	<h1 class="row col-sm-10 col-xs-7">App info</h1>
+	<div class="col-sm-2 col-xs-5"></div>
 </div>
 
 <h3 class="row">Last Updated</h3>
@@ -443,7 +443,7 @@
 
 </div>
 
-<a id="backButton" class="col-sm-2 col-xs-6 btn btn-primary btn-lg" href="#">Return to top.</a>
+<a id="backButton" class="col-sm-2 col-xs-5 btn btn-primary btn-lg" href="#">Return to top.</a>
 </body>
 </html>
 
