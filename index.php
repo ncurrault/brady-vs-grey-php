@@ -225,12 +225,6 @@
 					<=
 					1.03 * ($(document).scrollTop() + $(window).outerHeight())
 				);
-				console.log($(document).scrollTop());
-				console.log($("#viewCountChart").position().top);
-				console.log("\n");
-				console.log($("#viewCountChart").position().top + $("#viewCountChart").innerHeight());
-				console.log($(document).scrollTop() + $(window).outerHeight());
-				console.log("\n\n");
 				
 				if (fullGraphVisible && !graphAnimated)
 				{
