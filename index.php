@@ -35,6 +35,9 @@
     <!-- Smooth scrolling -->
     <script src="js/jquery.smooth-scroll.min.js"></script>
     
+    <!-- D3 -->
+    <script src="js/d3.min.js"></script>
+    
     <script>
 		// The "ease-in/ease-out" main counter
 		$(function()
