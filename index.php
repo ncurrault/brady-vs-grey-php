@@ -29,8 +29,8 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     
-    <!-- For what I don't like -->
-    <link rel="stylesheet" href="main.css">
+    <!-- For my own CSS -->
+    <link rel="stylesheet" href="css/main.css">
     
     <!-- Smooth scrolling -->
     <script src="js/jquery.smooth-scroll.min.js"></script>

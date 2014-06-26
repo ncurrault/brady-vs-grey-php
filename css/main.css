@@ -18,7 +18,7 @@ html, body
 }
 
 
-#viewCountCompare [class*='col-']
+#viewCountCompare div[class*='col-']
 {
 	font-size: 36px;
 }
