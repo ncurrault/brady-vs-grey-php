@@ -1,8 +1,3 @@
-.mainSection
-{
-	min-height: 100%;
-}
-
 html, body
 {
 	height: 100%;
@@ -17,12 +12,6 @@ html, body
 	font-style: italic;
 }
 
-
-#viewCountCompare div[class*='col-']
-{
-	font-size: 36px;
-}
-
 #appInfo iframe
 {
 	border: none;
@@ -35,6 +24,11 @@ html, body
 	position: fixed;
 	top: 10px;
 	right: 10px;
+}
+
+.mainSection
+{
+	min-height: 100%;
 }
 .tableRowEven
 {

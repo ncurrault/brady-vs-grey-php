@@ -85,7 +85,7 @@
 			return;
 		});
 		
-		// Fit main text to window 	
+		// Calculate text sizes based on window size
 		$(function()
 		{			
 			function fitText()
@@ -93,13 +93,13 @@
 				$("#theNumber").css({
 					"font-size": (0.5 * $(window).height()) + "px"
 				});
+				
+				$("#viewCountCompare div[class*='col-']").css({
+					"font-size": (0.04 * $(window).height()) + "px"
+				});
 			}
 			
-			$(window).resize(function ()
-			{
-				fitText();
-			});
-			
+			$(window).resize(fitText);
 			fitText();
 		});
 		
