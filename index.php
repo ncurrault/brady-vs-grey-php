@@ -38,7 +38,17 @@
     <!-- D3 -->
     <script src="js/d3.min.js"></script>
     
+    <!-- For easing functions -->
+    <script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+    
     <script>
+		// Used in multiple functions
+		function getCurrentTime()
+			{
+				var d = new Date();
+				return d.getTime();
+			}
+		
 		// The "ease-in/ease-out" main counter
 		$(function()
 		{
@@ -46,11 +56,6 @@
 			var endNum = parseInt( element.data("number") );
 			var timeToTake = 3;
 			
-			function getCurrentTime ()
-			{
-				var d = new Date();
-				return d.getTime();
-			}
 			function getNumForTime(n)
 			{
 				if (n >= timeToTake)
@@ -137,10 +142,117 @@
 			});
 		});
 		
+		// Draw graph
+		$(function()
+		{			
+			var grey = parseInt($("#viewCountChart").data("grey"));
+			var bradyAvg = parseInt($("#viewCountChart").data("brady-avg"));
+			var bradyTotal = parseInt($("#viewCountChart").data("brady-total"));
+			
+			// Graph setup
+			var data = [grey, bradyAvg, bradyTotal];
+			
+			var whereToWrite = {
+				greyViews: grey,
+				bradyAvg: bradyAvg,
+				bradyTotal: bradyTotal
+			};
+			
+			var x = d3.scale.linear()
+    			.domain([0, d3.max(data)])
+    			.range([0, $("#viewCountChart").width()]);
+			
+			d3.select("#viewCountChart").selectAll("div")
+				.data(data)
+				.enter().append("div")
+				.attr({
+					"data-width": function(d) { return x(d) + "px"; },
+					"data-value": function(d) { return d; },
+					"data-writespot": function(d)
+					{
+						for (e in whereToWrite)
+						{
+							if (d == whereToWrite[e]) return "#"+e;
+						}
+					}
+				})
+				.property("hidden", function (d) { return whereToWrite.bradyTotal == d })
+				.classed("hidden-to-grey", function (d) { return whereToWrite.bradyTotal == d })
+				.style({
+					"height": (0.15 * $(window).height() ).toString() + "px",
+				});
+			
+			function animateGraph()
+			{
+				$("#viewCountChart div").each(function ()
+				{
+					$(this).animate(
+						{"width": $(this).data("width")},
+						{
+							"duration": 1000,
+							"easing": "easeOutSine",
+							"step":function ()
+							{
+								$($(this).data("writespot")).html(
+									Math.round(
+										( $(this).width()/parseFloat($(this).data("width")) ) * parseInt($(this).data("value"))
+									)
+								);
+								if ($(this).hasClass("hidden-to-grey") && $("#bradyTotalReveal").css("display") == "none")
+								{
+									$(this).css("display","block");
+								}
+							},
+							"complete": function ()
+							{
+								$($(this).data("writespot")).html($(this).data("value"));
+							}
+						}
+					);
+				});
+			}
+			
+			var graphAnimated = false;
+			
+			$(document).scroll(function ()
+			{
+				var fullGraphVisible = (
+					$(document).scrollTop()
+					<=
+					$("#viewCountChart").position().top
+				&&
+					$("#viewCountChart").position().top + $("#viewCountChart").innerHeight()
+					<=
+					1.03 * ($(document).scrollTop() + $(window).outerHeight())
+				);
+				console.log($(document).scrollTop());
+				console.log($("#viewCountChart").position().top);
+				console.log("\n");
+				console.log($("#viewCountChart").position().top + $("#viewCountChart").innerHeight());
+				console.log($(document).scrollTop() + $(window).outerHeight());
+				console.log("\n\n");
+				
+				if (fullGraphVisible && !graphAnimated)
+				{
+					setTimeout(animateGraph, 300);
+					graphAnimated = true;
+				}
+				else if (!fullGraphVisible)
+				{
+					$("#viewCountChart div").css({"width":"3px"}).stop();
+					$("#greyViews, #bradyAvg, #bradyTotal").each(function ()
+					{
+						$(this).html( "<noscript>" + $(this).html() + "</noscript>");
+					});
+					graphAnimated = false;
+				}
+			});
+		});
+		
 		// For the "Grey, don't click here!" button
 		$(function()
 		{
-			$("#bradyTotalReveal").click(function revealThings ()
+			$("#bradyTotalReveal").click(function ()
 			{
 				$("#bradyTotalReveal").fadeOut();
 				setTimeout(function ()
@@ -258,39 +370,46 @@
 	<div class="col-sm-2 col-xs-6"></div>
 </div>
 
-<div class="row tableRowEven">
+<?php
+	$grey_views = $grey_vid['viewcount'];
+	
+	$brady_total = 0;
+	foreach ($brady_vids as $vid)
+	{
+		$brady_total = $brady_total + $vid['viewcount'];
+	}
+	
+	if (count($brady_vids) == 0)
+	{
+		$brady_avg = "N/A";
+	}
+	else
+	{
+		$brady_avg = round( $brady_total / count($brady_vids) );
+	}
+?>
+
+<div class="row">
 	<div class="col-xs-6">Grey</div>
-	<div class="col-xs-6 right-align"><?php $grey_views = $grey_vid['viewcount']; echo $grey_views; ?></div>
+	<div id="greyViews" class="col-xs-6 right-align"><noscript><?php echo $grey_views; ?></noscript></div>
 </div>
-<div class="row tableRowOdd">
+<div class="row">
 	<div class="col-xs-6">Brady: Average</div>
-	<div class="col-xs-6 right-align">
-		<?php
-			if (count($brady_vids) == 0)
-			{
-				echo "N/A";
-			}
-			else
-			{
-				$brady_total = 0;
-				foreach ($brady_vids as $vid)
-				{
-					$brady_total = $brady_total + $vid['viewcount'];
-				}
-				
-				echo round( $brady_total / count($brady_vids) );
-			}
-		?>
+	<div id="bradyAvg" class="col-xs-6 right-align">
+		<noscript><?php echo $brady_avg; ?></noscript>
 	</div>
 </div>
-<div class="row hidden-to-grey tableRowEven" <?php if ($brady_total >= $grey_views) echo "hidden"; ?> >
+<div class="row hidden-to-grey" <?php if ($brady_total >= $grey_views) echo "hidden"; ?> >
 	<div class="col-xs-6">Brady: Total</div>
-	<div class="col-xs-6 right-align"><?php echo $brady_total; ?></div>
+	<div id="bradyTotal" class="col-xs-6 right-align"><noscript><?php echo $brady_total; ?></noscript></div>
 </div>
 <div class="row" id="hidden-stuff-toggle" <?php if ($brady_total < $grey_views) echo "hidden"; ?> >
 	<div class="col-xs-12 center-align">
 		<button id="bradyTotalReveal" class="btn btn-danger btn-lg">Grey, don't click here!</button>
 	</div>
+</div>
+
+<div id="viewCountChart" data-grey="<?php echo $grey_views; ?>" data-brady-avg="<?php echo $brady_avg; ?>" data-brady-total="<?php echo $brady_total; ?>">
 </div>
 
 </div>
@@ -309,7 +428,11 @@
 	?> UTC
 </h4>
 
-<h3 class="row">Powered by YouTube Data API (v2)</h3>
+<h3 class="row">Credits</h3>
+<h4 class="row">Powered by YouTube Data API (v2)</h4>
+<h4 class="row">Graph generated with D3.</h4>
+<h4 class="row">Frontend created with Bootstrap.</h4>
+<h4 class="row">Hosted by Heroku.</h4>
 <h3 class="row">
 <a href="http://github.com/nicktendo64/brady-vs-grey-php">View the source code on GitHub.</a>
 </h3>
@@ -330,7 +453,7 @@ flush(); // Send the output to the user (this will prevent the long load time.)
 $now = time();
 $lastUpdate = strtotime($lastUpdate);
 
-if (($now - $lastUpdate) >= 21600 || ($now % 86400 == 0)) // Update when the time is midnight or it's been >= 6 hours since the last update.
+if (($now - $lastUpdate) >= 21600) // Update when it's been >= 6 hours since the last update.
 {
 	update_with_api();	
 }

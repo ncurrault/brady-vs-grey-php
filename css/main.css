@@ -12,6 +12,42 @@ html, body
 	font-style: italic;
 }
 
+#viewCountChart div
+{
+	text-align: right;
+	vertical-align: middle;
+	
+	margin-top: 5px;
+	
+	width: 3px;
+}
+#viewCountChart div:first-child
+{
+	background-color: rgb(150,150,150);
+}
+#viewCountCompare div.row:nth-child(2)
+{
+	background-color: rgba(150,150,150, 0.4);
+}
+
+#viewCountChart div:nth-child(2)
+{
+	background-color: rgb(100,255,100);
+}
+#viewCountCompare div.row:nth-child(3)
+{
+	background-color: rgba(100,255,100, 0.4);
+}
+
+#viewCountChart div:nth-child(3)
+{
+	background-color: rgb(100,100,255);
+}
+#viewCountCompare div.row:nth-child(4)
+{
+	background-color: rgba(100,100,255, 0.4);
+}
+
 #appInfo iframe
 {
 	border: none;
