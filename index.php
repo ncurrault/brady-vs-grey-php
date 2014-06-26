@@ -50,47 +50,22 @@
 			}
 		
 		// The "ease-in/ease-out" main counter
-		$(function()
+		$(function ()
 		{
-			var element = $("#theNumber");
-			var endNum = parseInt( element.data("number") );
-			var timeToTake = 3;
 			
-			function getNumForTime(n)
-			{
-				if (n >= timeToTake)
+			$("#theNumber").animate(
 				{
-					return endNum;
-				}
-				else if (n <= 0)
+					foo: parseInt( $("#theNumber").data("number") )
+				},
 				{
-					return 0;
+    				"step": function(val)
+    				{
+    					$("#theNumber").html( Math.round(val) );
+    				},
+    				"duration": 3000,
+    				"easing": "easeInOutSine"
 				}
-				else
-				{
-					return endNum * (0.5 - 0.5 * Math.cos((Math.PI / timeToTake) * n)); // (n/timeToTake)*endNum;
-				}
-			}
-			
-			var currTime = 0;
-			var numToSet;
-			
-			var numAnimation = setInterval(function ()
-			{
-				numToSet = getNumForTime(currTime);
-				element.html( Math.round(numToSet) );
-				
-				currTime += 1/30;
-				
-				if (currTime >= timeToTake)
-				{
-					clearInterval(numAnimation);
-				}
-			}, 1000/30); // Screen refreshes only 30 times per second
-			
-			element.html( endNum );
-			
-			return;
+			);
 		});
 		
 		// Calculate text sizes based on window size
