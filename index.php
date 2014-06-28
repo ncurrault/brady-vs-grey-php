@@ -18,9 +18,10 @@ function updateIfNecessary()
 // Check if the cached file is still fresh. If it is, serve it up and exit.
 if (file_exists("cache_index.html"))
 {
-	error_log("Cache file found. Redirecting...");
-	header("Location: /cache_index.html", true, 302);
+	error_log("Loading cache file...");
+	include("cache_index.html");
 
+	error_log("Closing connection...");
 	// Close the connection (http://www.php.net/manual/en/features.connection-handling.php#71172)
 	error_log("Closing connection");
 	ob_end_clean();
@@ -32,6 +33,7 @@ if (file_exists("cache_index.html"))
 	ob_end_flush(); // Strange behaviour, will not work
 	flush(); // Unless both are called !
 	
+	error_log("Checking if update is necessary...");
 	updateIfNecessary();
 	
 	exit();
