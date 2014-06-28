@@ -1,11 +1,41 @@
-<!DOCTYPE html>
-
 <?php
-
-
 require_once "sql_functions.php";
 require_once "update.php";
 
+
+function updateIfNecessary()
+{
+	$now = time();
+	$lastUpdate = strtotime(sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime']);
+
+	if (!$lastUpdate || ($now - $lastUpdate) >= 21600) // Update when it's been >= 6 hours since the last update.
+	{
+		update_with_api();
+	}
+}
+
+// Check if the cached file is still fresh. If it is, serve it up and exit.
+if (file_exists("cache_index.html"))
+{
+	header("Location: /cache_index.html", true, 302);
+
+	// Close the connection (http://www.php.net/manual/en/features.connection-handling.php#71172)
+	ob_end_clean();
+	header("Connection: close");
+	ignore_user_abort(true); // just to be safe
+	ob_start();
+	$size = ob_get_length();
+	header("Content-Length: $size");
+	ob_end_flush(); // Strange behaviour, will not work
+	flush(); // Unless both are called !
+	
+	updateIfNecessary();
+	sleep(30);
+	
+	exit();
+}
+
+ob_start();
 function fetchData()
 {
 	global $greyVid, $bradyVids, $lastUpdate;
@@ -77,6 +107,7 @@ else
 	$bradyAvg = round( $bradyTotal / count($bradyVids) );
 }
 ?>
+<!DOCTYPE html>
 
 <html>
 	<head>
@@ -277,16 +308,14 @@ else
 					
 					if (fullGraphVisible && !graphAnimated)
 					{
-						setTimeout(animateGraph, 300);
+						setTimeout(animateGraph, 100);
+						$("#greyViews, #bradyAvg, #bradyTotal").show();
 						graphAnimated = true;
 					}
 					else if (!fullGraphVisible)
 					{
 						$("#viewCountChart div").css({"width":"3px"}).stop();
-						$("#greyViews, #bradyAvg, #bradyTotal").each(function ()
-						{
-							$(this).html( "<noscript>" + $(this).html() + "</noscript>");
-						});
+						$("#greyViews, #bradyAvg, #bradyTotal").hide();
 						graphAnimated = false;
 					}
 				});
@@ -426,10 +455,12 @@ else
 			</h4>
 
 			<h3 class="row">Credits</h3>
-			<h4 class="row">Powered by YouTube Data API (v2)</h4>
+			
 			<h4 class="row">Graph generated with D3.</h4>
 			<h4 class="row">Frontend created with Bootstrap.</h4>
+			<h4 class="row">Powered by YouTube Data API (v2)</h4>
 			<h4 class="row">Hosted by Heroku.</h4>
+			
 			
 			<h3 class="row">
 				<a href="http://github.com/nicktendo64/brady-vs-grey-php">View the source code on GitHub.</a>
@@ -446,13 +477,9 @@ else
 </html>
 
 <?php
-flush(); // Send the output to the user (this will prevent the long load time.)
-
-$now = time();
-$lastUpdate = strtotime($lastUpdate);
-
-if (($now - $lastUpdate) >= 21600) // Update when it's been >= 6 hours since the last update.
-{
-	update_with_api();	
-}
+$fp = fopen("cache_index.html", 'w');
+fwrite($fp, ob_get_contents());
+fclose($fp);
+// finally send browser output
+flush();
 ?>

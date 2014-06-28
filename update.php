@@ -125,6 +125,9 @@ function update_with_api()
 	// Record the time
 	recordUpdate();
 	
+	// Clear the cache (so this update will apply)
+	unlink("cache_index.html");
+
 	error_log("Updated!");
 }
 ?>
