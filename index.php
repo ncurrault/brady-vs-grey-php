@@ -33,7 +33,6 @@ if (file_exists("cache_index.html"))
 	flush(); // Unless both are called !
 	
 	updateIfNecessary();
-	sleep(30);
 	
 	exit();
 }
