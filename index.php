@@ -10,6 +10,7 @@ function updateIfNecessary()
 
 	if (!$lastUpdate || ($now - $lastUpdate) >= 21600) // Update when it's been >= 6 hours since the last update.
 	{
+		error_log("Update is necessary.  Updating...");
 		update_with_api();
 	}
 }
@@ -17,9 +18,11 @@ function updateIfNecessary()
 // Check if the cached file is still fresh. If it is, serve it up and exit.
 if (file_exists("cache_index.html"))
 {
+	error_log("Cache file found. Redirecting...");
 	header("Location: /cache_index.html", true, 302);
 
 	// Close the connection (http://www.php.net/manual/en/features.connection-handling.php#71172)
+	error_log("Closing connection");
 	ob_end_clean();
 	header("Connection: close");
 	ignore_user_abort(true); // just to be safe
