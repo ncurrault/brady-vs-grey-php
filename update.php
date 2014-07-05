@@ -66,15 +66,8 @@ function vidEntryToArray($videoEntry, $channel)
 	'viewcount' => $videoEntry->getVideoViewCount(),
 	);
 }
-function getUploads($channel, $maxNum = 25)
-{
-	global $api_key;
-	// Initialize the API with my key
-	require_once 'Zend/Loader.php'; // the Zend dir must be in your include_path
-	Zend_Loader::loadClass('Zend_Gdata_YouTube');
-	$yt = new Zend_Gdata_YouTube(null, "Brady vs. Grey - PHP version", null, $api_key);
-	$yt->setMajorProtocolVersion(2);
-	
+function getUploads($channel, $yt, $maxNum = 25)
+{	
 	$ret = array( );
 	$videoFeed = $yt->getUserUploads($channel);
 	
@@ -101,16 +94,23 @@ function update_with_api()
 	$_SERVER['DOCUMENT_ROOT'] . "/ZendFramework-1.12.7/library"
 );
 	
+	global $api_key;
+	// Initialize the API with my key
+	require_once 'Zend/Loader.php'; // the Zend dir must be in your include_path
+	Zend_Loader::loadClass('Zend_Gdata_YouTube');
+	$yt = new Zend_Gdata_YouTube(null, "Brady vs. Grey - PHP version", null, $api_key);
+	$yt->setMajorProtocolVersion(2);
+
 	global $greyChannels, $bradyChannels;
 	$vids = array( );
 	
 	foreach ($greyChannels as $channel)
 	{
-		$vids = array_merge($vids, getUploads($channel, 1));
+		$vids = array_merge($vids, getUploads($channel, $yt, 1));
 	}
 	foreach ($bradyChannels as $channel)
 	{
-		$vids = array_merge($vids, getUploads($channel, 20));
+		$vids = array_merge($vids, getUploads($channel, $yt, 20));
 	}
 	
 	foreach ($vids as $vid)
