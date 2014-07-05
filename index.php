@@ -16,28 +16,29 @@ function updateIfNecessary()
 }
 
 // Check if the cached file is still fresh. If it is, serve it up and exit.
-if (file_exists("cache_index.html"))
-{
-	error_log("Loading cache file...");
-	include("cache_index.html");
+// For testing: no cache
+// if (file_exists("cache_index.html"))
+// {
+// 	error_log("Loading cache file...");
+// 	include("cache_index.html");
 
-	error_log("Closing connection...");
-	// Close the connection (http://www.php.net/manual/en/features.connection-handling.php#71172)
-	error_log("Closing connection");
-	ob_end_clean();
-	header("Connection: close");
-	ignore_user_abort(true); // just to be safe
-	ob_start();
-	$size = ob_get_length();
-	header("Content-Length: $size");
-	ob_end_flush(); // Strange behaviour, will not work
-	flush(); // Unless both are called !
+// 	error_log("Closing connection...");
+// 	// Close the connection (http://www.php.net/manual/en/features.connection-handling.php#71172).  Usually doesn't work
+// 	error_log("Closing connection");
+// 	ob_end_clean();
+// 	header("Connection: close");
+// 	ignore_user_abort(true); // just to be safe
+// 	ob_start();
+// 	$size = ob_get_length();
+// 	header("Content-Length: $size");
+// 	ob_end_flush(); // Strange behaviour, will not work
+// 	flush(); // Unless both are called !
 	
-	error_log("Checking if update is necessary...");
-	updateIfNecessary();
+// 	error_log("Checking if update is necessary...");
+// 	updateIfNecessary();
 	
-	exit();
-}
+// 	exit();
+// }
 
 ob_start();
 function fetchData()
@@ -157,11 +158,25 @@ else
 				var d = new Date();
 				return d.getTime();
 			}
-			
+			function constrain(value, lowerBound, upperBound)
+			{
+				if (value<=lowerBound)
+				{
+					return lowerBound;
+				}
+				else if (value>=upperBound)
+				{
+					return upperBound;
+				}
+				else
+				{
+					return value;
+				}
+			}
+
 			// The "ease-in/ease-out" main counter
 			$(function ()
 			{
-				
 				$("#theNumber").animate(
 				{
 					foo: parseInt( $("#theNumber").data("number") )
@@ -171,7 +186,7 @@ else
 					{
 						$("#theNumber").html( Math.round(val) );
 					},
-					"duration": 3000,
+					"duration": constrain(parseInt( $("#theNumber").data("number") ) * 150, 0, 3000), // I don't want it to take more than 3 seconds to count
 					"easing": "easeInOutSine"
 				}
 				);
@@ -191,7 +206,7 @@ else
 					});
 				}
 				
-				$(window).resize(fitText);
+				$(window).resize(fitText); // Sets "fitText" as a callback.
 				fitText();
 			});
 			
@@ -282,7 +297,7 @@ else
 											( $(this).width()/parseFloat($(this).data("width")) ) * parseInt($(this).data("value"))
 											)
 										);
-									if ($(this).hasClass("hidden-to-grey") && $("#bradyTotalReveal").css("display") == "none")
+									if ($(this).hasClass("hidden-to-grey") && !$("#bradyTotalReveal").is(":visible") )
 									{
 										$(this).css("display","block");
 									}
