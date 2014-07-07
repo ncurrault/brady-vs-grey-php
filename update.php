@@ -87,12 +87,12 @@ function update_with_api()
 {
 	// The API needs its library in the include_path.
 	set_include_path(
-	get_include_path()
-	.
-	PATH_SEPARATOR
-	.
-	$_SERVER['DOCUMENT_ROOT'] . "/ZendFramework-1.12.7/library"
-);
+		get_include_path()
+		.
+		PATH_SEPARATOR
+		.
+		$_SERVER['DOCUMENT_ROOT'] . "/ZendFramework-1.12.7/library"
+	);
 	
 	global $api_key;
 	// Initialize the API with my key
@@ -126,8 +126,25 @@ function update_with_api()
 	recordUpdate();
 	
 	// Clear the cache (so this update will apply)
-	unlink("cache_index.html");
+	unlink("cached.php");
 
 	error_log("Updated!");
+}
+
+if (!count(debug_backtrace())) // Equivalent to Python's `if __name__ == '__main__'`
+{
+	$submittedSecret = $_GET["secret"];
+	$realSecret = $_ENV["UPDATE_SECRET"];
+
+	if ($submittedSecret == $realSecret)
+	{
+		update_with_api();
+		echo "Updated successfully!  <a href=\"/\">View the homepage.</a>";
+	}
+	else
+	{
+		http_response_code(403); // Forbidden
+		echo "You are not permitted to trigger an update.";
+	}
 }
 ?>

@@ -3,42 +3,14 @@ require_once "sql_functions.php";
 require_once "update.php";
 
 
-function updateIfNecessary()
-{
-	$now = time();
-	$lastUpdate = strtotime(sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime']);
-
-	if (!$lastUpdate || ($now - $lastUpdate) >= 21600) // Update when it's been >= 6 hours since the last update.
-	{
-		error_log("Update is necessary.  Updating...");
-		update_with_api();
-	}
-}
-
 // Check if the cached file is still fresh. If it is, serve it up and exit.
-// For testing: no cache
-// if (file_exists("cache_index.html"))
-// {
-// 	error_log("Loading cache file...");
-// 	include("cache_index.html");
-
-// 	error_log("Closing connection...");
-// 	// Close the connection (http://www.php.net/manual/en/features.connection-handling.php#71172).  Usually doesn't work
-// 	error_log("Closing connection");
-// 	ob_end_clean();
-// 	header("Connection: close");
-// 	ignore_user_abort(true); // just to be safe
-// 	ob_start();
-// 	$size = ob_get_length();
-// 	header("Content-Length: $size");
-// 	ob_end_flush(); // Strange behaviour, will not work
-// 	flush(); // Unless both are called !
+if (file_exists("cached.php"))
+{
+	error_log("Loading cache file...");
+	include("cached.php");
 	
-// 	error_log("Checking if update is necessary...");
-// 	updateIfNecessary();
-	
-// 	exit();
-// }
+	exit();
+}
 
 ob_start();
 function fetchData()
@@ -496,7 +468,7 @@ else
 </html>
 
 <?php
-$fp = fopen("cache_index.html", 'w');
+$fp = fopen("cached.php", 'w');
 fwrite($fp, ob_get_contents());
 fclose($fp);
 // finally send browser output
