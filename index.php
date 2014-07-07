@@ -6,11 +6,11 @@ require_once "update.php";
 // Check if the cached file is still fresh. If it is, serve it up and exit.
 if (file_exists("cached.php"))
 {
-	error_log("Loading cache file...");
 	include("cached.php");
 	
 	exit();
 }
+error_log("No cache file found; generating page...");
 
 
 ob_start();
@@ -458,7 +458,7 @@ else
 				YouTube data obtained with <a href="http://developers.google.com/youtube/2.0/developers_guide_protocol">YouTube Data API (v2)</a>.
 			</p>
 			<p class="row">
-				Hosting and PostgreSQL database by <a href="https://heroku.com">Heroku</a>.
+				Hosting and PostgreSQL database by <a href="http://heroku.com">Heroku</a>.
 			</p>
 			
 
@@ -474,9 +474,12 @@ else
 </html>
 
 <?php
-$fp = fopen("cached.php", 'w');
-fwrite($fp, ob_get_contents());
-fclose($fp);
-// finally send browser output
+// Save the cache file
+$cacheFile = fopen("cached.php", 'w');
+fwrite($cacheFile, ob_get_contents());
+fclose($cacheFile);
+error_log("New cache file created.");
+
+// finally send the output to the user
 flush();
 ?>

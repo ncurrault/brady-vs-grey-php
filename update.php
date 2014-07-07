@@ -85,6 +85,7 @@ function getUploads($channel, $yt, $maxNum = 25)
 
 function update_with_api()
 {
+	error_log("Updated triggered...");
 	// The API needs its library in the include_path.
 	set_include_path(
 		get_include_path()
@@ -128,7 +129,7 @@ function update_with_api()
 	// Clear the cache (so this update will apply)
 	unlink("cached.php");
 
-	error_log("Updated!");
+	error_log("Updated successfully!");
 }
 
 if (!count(debug_backtrace())) // Equivalent to Python's `if __name__ == '__main__'`
