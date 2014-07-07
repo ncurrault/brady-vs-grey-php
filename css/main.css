@@ -48,9 +48,9 @@ html, body
 	background-color: rgba(100,100,255, 0.4);
 }
 
-#appInfo iframe
+#appInfo p.row
 {
-	border: none;
+	line-height: 1;
 }
 
 #backButton

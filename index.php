@@ -12,6 +12,7 @@ if (file_exists("cached.php"))
 	exit();
 }
 
+
 ob_start();
 function fetchData()
 {
@@ -441,25 +442,30 @@ else
 			</div>
 
 			<h3 class="row">Last Updated</h3>
-			<h4 class="row">
+			<p class="row">
 				<?php echo $lastUpdate; ?> UTC
-			</h4>
+			</p>
 
 			<h3 class="row">Credits</h3>
 			
-			<h4 class="row">Graph generated with D3.</h4>
-			<h4 class="row">Frontend created with Bootstrap.</h4>
-			<h4 class="row">Powered by YouTube Data API (v2)</h4>
-			<h4 class="row">Hosted by Heroku.</h4>
+			<p class="row">
+				View count comparison chart generated with <a href="http://d3js.org">D3</a>.
+			</p>
+			<p class="row">
+				Frontend created with <a href="http://getbootstrap.com">Bootstrap</a>.
+			</p>
+			<p class="row">
+				YouTube data obtained with <a href="http://developers.google.com/youtube/2.0/developers_guide_protocol">YouTube Data API (v2)</a>.
+			</p>
+			<p class="row">
+				Hosting and PostgreSQL database by <a href="https://heroku.com">Heroku</a>.
+			</p>
 			
-			
-			<h3 class="row">
-				<a href="http://github.com/nicktendo64/brady-vs-grey-php">View the source code on GitHub.</a>
-			</h3>
 
 			<!-- NOTES HERE -->
 			<h3 class="row">Notes</h3>
-			<h5 class="row">To conserve processer and network resources, this app should only update four times per day.</h5>
+			<p class="row">The source code is available <a href="http://github.com/nicktendo64/brady-vs-grey-php">on GitHub</a>.</p>
+			<p class="row">To conserve processer and network resources, this app should only update four times per day.</p>
 		</div>
 
 		<!-- Floating back-to-top button (not part of any section) -->
