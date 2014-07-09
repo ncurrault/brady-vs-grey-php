@@ -25,13 +25,13 @@ function sqlQuery($q, $params=null)
 		$q_result = pg_query($sql_connection, $q);
 	}
 	
-	if (!$q_result)
-	{
-		return null;
-	}
 	
 	$ret = pg_fetch_all($q_result);
-	
+	if (!$ret) // I want to be able to iterate over the result in index.php
+	{
+		$ret = array( );
+	}
+
 	return $ret;
 }
 
