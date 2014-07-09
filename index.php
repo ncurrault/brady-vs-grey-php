@@ -217,10 +217,23 @@ else
 			// Draw graph
 			$(function()
 			{			
-				var grey = parseInt($("#viewCountChart").data("grey"));
-				var bradyAvg = parseInt($("#viewCountChart").data("brady-avg"));
-				var bradyTotal = parseInt($("#viewCountChart").data("brady-total"));
 				
+				var grey = parseInt($("#viewCountChart").data("grey"));
+				var bradyTotal = parseInt($("#viewCountChart").data("brady-total"));
+				if (bradyTotal == 0) // The whole graph thingy really doesn't work here
+				{
+					// Just show everything and give up.
+					$("#greyViews").html( $("#greyViews noscript").html() );
+					$("#bradyAvg").html( $("#bradyAvg noscript").html() );
+					$("#bradyTotal").html( $("#bradyTotal noscript").html() );
+					
+					$("#viewCountChart").remove();
+
+					return;
+				}
+				
+				var bradyAvg = parseInt($("#viewCountChart").data("brady-avg"));
+
 				// Graph setup
 				var data = [grey, bradyAvg, bradyTotal];
 				
@@ -232,7 +245,7 @@ else
 				
 				var x = d3.scale.linear()
 				.domain([0, d3.max(data)])
-				.range([0, $("#viewCountChart").width()]);
+				.range([3, $("#viewCountChart").width()]);
 				
 				d3.select("#viewCountChart").selectAll("div")
 				.data(data)
@@ -272,7 +285,7 @@ else
 										);
 									if ($(this).hasClass("hidden-to-grey") && !$("#bradyTotalReveal").is(":visible") )
 									{
-										$(this).css("display","block");
+										$(this).show();
 									}
 								},
 								"complete": function ()
