@@ -243,15 +243,20 @@ else
 					bradyTotal: bradyTotal
 				};
 				
-				var x = d3.scale.linear()
+				var dataToWidth = d3.scale.linear()
 				.domain([0, d3.max(data)])
 				.range([3, $("#viewCountChart").width()]);
+
+				var widthToData = d3.scale.linear()
+				.domain([3, $("#viewCountChart").width()])
+				.range([0, d3.max(data)]);
 				
+
 				d3.select("#viewCountChart").selectAll("div")
 				.data(data)
 				.enter().append("div")
 				.attr({
-					"data-width": function(d) { return x(d) + "px"; },
+					"data-width": function(d) { return dataToWidth(d) + "px"; },
 					"data-value": function(d) { return d; },
 					"data-writespot": function(d)
 					{
@@ -279,10 +284,8 @@ else
 								"step":function ()
 								{
 									$($(this).data("writespot")).html(
-										Math.round(
-											( $(this).width()/parseFloat($(this).data("width")) ) * parseInt($(this).data("value"))
-											)
-										);
+										Math.round( widthToData( $(this).width() ) )
+									);
 									if ($(this).hasClass("hidden-to-grey") && !$("#bradyTotalReveal").is(":visible") )
 									{
 										$(this).show();
@@ -313,8 +316,14 @@ else
 					
 					if (fullGraphVisible && !graphAnimated)
 					{
-						setTimeout(animateGraph, 100);
-						$("#greyViews, #bradyAvg, #bradyTotal").show();
+						setTimeout(function()
+						{
+							$("#greyViews, #bradyAvg, #bradyTotal").html("0");
+							$("#greyViews, #bradyAvg, #bradyTotal").show();
+
+							animateGraph();
+						}, 100);
+						
 						graphAnimated = true;
 					}
 					else if (!fullGraphVisible)
