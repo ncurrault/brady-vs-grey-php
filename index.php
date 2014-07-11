@@ -496,12 +496,12 @@ else
 </html>
 
 <?php
+// Send the output to the user
+flush();
+
 // Save the cache file
 $cacheFile = fopen("cached.php", 'w');
 fwrite($cacheFile, ob_get_contents());
 fclose($cacheFile);
 error_log("New cache file created.");
-
-// finally send the output to the user
-flush();
 ?>
