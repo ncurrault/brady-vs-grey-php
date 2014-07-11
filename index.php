@@ -38,11 +38,11 @@ function echoVidRow($vid, $isEven)
 
 	$views = $vid['viewcount'];
 	$title = $vid['title'];
-	$url = "http://youtu.be/" . $vid['youtubeid'];
+	$url = "http://youtube.com/watch?v=" . $vid['youtubeid'];
 
 	if ($views == 301)
 	{
-		$views = '<a href="http://youtu.be/oIkhgagvrjI">301</a>'; // EASTER EGG!
+		$views = '<a href="http://youtube.com/watch?v=oIkhgagvrjI">301</a>'; // EASTER EGG!
 	}
 	elseif ($views == -1)
 	{
