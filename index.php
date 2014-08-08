@@ -2,11 +2,14 @@
 require_once "sql_functions.php";
 require_once "update.php";
 
+// Specify these file names; they may change.
+$cacheFile = "cache-standard.html";
+$notesFile = "notes.html";
 
 // Check if the cached file is still fresh. If it is, serve it up and exit.
-if (file_exists("cached.php"))
+if (file_exists($cacheFile))
 {
-	include("cached.php");
+	include($cacheFile);
 	
 	exit();
 }
@@ -486,8 +489,9 @@ else
 
 			<!-- NOTES HERE -->
 			<h3 class="row">Notes</h3>
-			<p class="row">The source code is available <a href="http://github.com/nicktendo64/brady-vs-grey-php">on GitHub</a>.</p>
-			<p class="row">To conserve processer and network resources, this app should only update four times per day.</p>
+			<?php
+				include($notesFile);
+			?>
 		</div>
 
 		<!-- Floating back-to-top button (not part of any section) -->
@@ -500,7 +504,7 @@ else
 flush();
 
 // Save the cache file
-$cacheFile = fopen("cached.php", 'w');
+$cacheFile = fopen($cacheFile, 'w');
 fwrite($cacheFile, ob_get_contents());
 fclose($cacheFile);
 error_log("New cache file created.");
