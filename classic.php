@@ -3,7 +3,7 @@ require_once "sql_functions.php";
 require_once "update.php";
 
 // Specify these file names; they may change.
-$cacheFile = "cache-simple.html";
+$cacheFile = "cache-classic.html";
 $notesFile = "notes.html";
 
 // Check if the cached file is still fresh. If it is, serve it up and exit.
@@ -92,7 +92,7 @@ else
 
 <html>
 <head>
-	<title>Brady vs. Grey</title>
+	<title>Brady vs. Grey | Classic</title>
 	<script>
 		function revealThings ()
 		{
