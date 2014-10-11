@@ -9,8 +9,7 @@ require_once "sql_functions.php";
 // for the API key
 $api_key = $_ENV["YOUTUBE_API_KEY"];
 
-$greyChannels = array(
-'CGPGrey', 'CGPGrey2', 'greysfavs');
+$greyChannels = array('CGPGrey');
 $bradyChannels = array(
 'numberphile', 'Computerphile', 'sixtysymbols',
 'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
@@ -40,6 +39,7 @@ function addVideoReplacing($unescapedVid)
 function deleteExtraneousVids()
 {
 	$latestGreyDate = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0]['uploaddate'];
+	
 	sqlQuery("DELETE FROM Video WHERE UploadDate < $1", array($latestGreyDate)); 
 }
 function recordUpdate()
