@@ -15,7 +15,7 @@ $bradyChannels = array(
 'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
 'bibledex', 'wordsoftheworld', 'FavScientist',
 'psyfile', 'BackstageScience', 'foodskey',
-'BradyStuff');
+'BradyStuff', 'yp1gCHZJU_fGWFf2rtMkCg'); // NOTE: Numberphile has a weird user ID for some reason
 
 function addVideoReplacing($unescapedVid)
 {	
@@ -61,7 +61,7 @@ function vidEntryToArray($videoEntry, $channel)
 		str_replace('T',' ',
 		str_replace('Z', '', $videoEntry->mediaGroup->uploaded->text
 		)),
-	'channel' => $channel,
+	'channel' => ($channel == 'yp1gCHZJU_fGWFf2rtMkCg') ? "Numberphile2" : $channel,
 	'creator' => (in_array($channel, $greyChannels) ? "C.G.P. Grey" : "Brady Haran"),
 	'viewcount' => $videoEntry->getVideoViewCount(),
 	);
