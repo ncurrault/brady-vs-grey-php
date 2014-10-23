@@ -5,6 +5,7 @@
 
 // Some handy SQL functions
 require_once "sql_functions.php";
+require_once "refresh.php";
 
 // for the API key
 $api_key = $_ENV["YOUTUBE_API_KEY"];
@@ -127,7 +128,7 @@ function update_with_api()
 	recordUpdate();
 	
 	// Clear the cache (so this update will apply)
-	unlink("cached.php");
+	refresh();
 
 	error_log("Updated successfully!");
 }
