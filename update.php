@@ -16,7 +16,20 @@ $bradyChannels = array(
 'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
 'bibledex', 'wordsoftheworld', 'FavScientist',
 'psyfile', 'BackstageScience', 'foodskey',
-'BradyStuff', 'yp1gCHZJU_fGWFf2rtMkCg'); // NOTE: Numberphile has a weird user ID for some reason
+'BradyStuff', 'yp1gCHZJU_fGWFf2rtMkCg', 'UCtwKon9qMt5YLVgQt1tvJKg');
+// NOTE: YouTube's newer channels have "channel IDs" not equivalent to the channels name
+function getchannelName($channelId)
+{
+	switch ($channelId) {
+		case 'yp1gCHZJU_fGWFf2rtMkCg':
+			return "Numberphile2";
+		case 'UCtwKon9qMt5YLVgQt1tvJKg':
+			return "Objectivity";
+		default:
+			return $channelId;
+	}
+}
+
 
 function addVideoReplacing($unescapedVid)
 {	
@@ -62,7 +75,7 @@ function vidEntryToArray($videoEntry, $channel)
 		str_replace('T',' ',
 		str_replace('Z', '', $videoEntry->mediaGroup->uploaded->text
 		)),
-	'channel' => ($channel == 'yp1gCHZJU_fGWFf2rtMkCg') ? "Numberphile2" : $channel,
+	'channel' => getChannelName($channel),
 	'creator' => (in_array($channel, $greyChannels) ? "C.G.P. Grey" : "Brady Haran"),
 	'viewcount' => $videoEntry->getVideoViewCount(),
 	);
