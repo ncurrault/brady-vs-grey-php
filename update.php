@@ -7,28 +7,31 @@
 require_once "sql_functions.php";
 require_once "refresh.php";
 
+// YouTube Data API v3
+require_once 'Google/autoload.php';
+
 // for the API key
 $api_key = $_ENV["YOUTUBE_API_KEY"];
 
-$greyChannels = array('CGPGrey');
-$bradyChannels = array(
+$greyChannelNames = array('CGPGrey');
+$bradyChannelNames = array(
 'numberphile', 'Computerphile', 'sixtysymbols',
 'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
 'bibledex', 'wordsoftheworld', 'FavScientist',
 'psyfile', 'BackstageScience', 'foodskey',
-'BradyStuff', 'yp1gCHZJU_fGWFf2rtMkCg', 'UCtwKon9qMt5YLVgQt1tvJKg');
-// NOTE: YouTube's newer channels have "channel IDs" not equivalent to the channels name
-function getchannelName($channelId)
-{
-	switch ($channelId) {
-		case 'yp1gCHZJU_fGWFf2rtMkCg':
-			return "Numberphile2";
-		case 'UCtwKon9qMt5YLVgQt1tvJKg':
-			return "Objectivity";
-		default:
-			return $channelId;
-	}
-}
+'BradyStuff', 'Numberhpile2', 'Objectivity');
+
+$greyChannelIDs = array('UC2C_jShtL725hvbm1arSV9w');
+$bradyChannelIDs = array(
+'UCoxcjq-8xIDTYp3uz647V5A', 'UC9-y-6csu5WGm29I7JiwpnA', 'UC9-y-6csu5WGm29I7JiwpnA',
+'UCtESv1e7ntJaLJYKIO1FoYw', 'UCCAgrIbwcJ67zIow1pNF30A', 'UCo-3ThNQmPmQSQL_L6Lx1_w',
+'UCnQtJro3IurKlxp7XSPqpaA', 'UC-YO7JkqlrBsgMGiAlqQ7Tg', 'UC4_HPD_v8Id82lnBrX7w7lg',
+'UCNGSLqZab4TkgY8cnJQxgtA', 'UCP16wb-IThCVvM8D-Xx8HXA', 'UCWUq6teKH18Iwuh41D75sQg',
+'UCRwr1kxjL-8m1L6mQXB2zSQ', 'UCyp1gCHZJU_fGWFf2rtMkCg', 'UCtwKon9qMt5YLVgQt1tvJKg');
+
+$allNames = array_merge($greyChannelNames, $bradyChannelNames);
+$allIDs = array_merge($greyChannelIDs, $bradyChannelIDs);
+$idToName = array_combine($allIDs, $allNames);
 
 
 function addVideoReplacing($unescapedVid)
@@ -64,30 +67,54 @@ function recordUpdate()
 	sqlQuery("INSERT INTO UpdateLog (updatedatetime) VALUES ($1)", array($now));
 }
 
-// Functions for getting videos from the API and putting them in arrays
-function vidEntryToArray($videoEntry, $channel) 
+
+function vidoGetViews($playlistObj, $youtube)
 {
-	global $greyChannels, $bradyChannels;
+	$vidItems = $youtube->videos->listVideos('statistics', array(
+		'id' => $playlistObj['snippet']['resourceId']['videoId'],
+		'maxResults' => 1
+	))['items'];
+	return $vidItems[0]['statistics']['viewCount'];
+}
+// Functions for getting videos from the API and putting them in arrays
+function playlistItemToArray($playlistItem, $channelID, $youtube) 
+{
+	global $greyChannelIDs, $idToName;
 	return array(
-	'title' => $videoEntry->getVideoTitle(),
-	'youtubeid' => $videoEntry->getVideoId(),
-	'uploaddate' =>
-		str_replace('T',' ',
-		str_replace('Z', '', $videoEntry->mediaGroup->uploaded->text
-		)),
-	'channel' => getChannelName($channel),
-	'creator' => (in_array($channel, $greyChannels) ? "C.G.P. Grey" : "Brady Haran"),
-	'viewcount' => $videoEntry->getVideoViewCount(),
+		'title' => $playlistItem['snippet']['title'],
+		'youtubeid' => $playlistItem['snippet']['resourceId']['videoId'],
+		'uploaddate' =>
+			str_replace('T',' ',
+			str_replace('Z', '', $playlistItem['snippet']['publishedAt']
+			)),
+		'channel' => $idToName[$channelID],
+		'creator' => (in_array($channelID, $greyChannelIDs) ? "C.G.P. Grey" : "Brady Haran"),
+		'viewcount' => vidoGetViews($playlistItem, $youtube),
 	);
 }
-function getUploads($channel, $yt, $maxNum = 25)
+function getUploads($channelID, $youtube, $maxNum = 25)
 {	
 	$ret = array( );
-	$videoFeed = $yt->getUserUploads($channel);
 	
-	foreach($videoFeed as $vid)
+	$channelsResponse = $youtube->channels->listChannels('contentDetails', array(
+	  'id' => $channelID,
+	));
+
+	if (empty($channelsResponse)) {
+		error_log("No channel with ID '" . $channelID . "' found.");
+		return array();
+	}
+	
+	$uploadsPlaylist = $channelsResponse[0]['contentDetails']['relatedPlaylists']['uploads'];
+
+	$playlistItems = $youtube->playlistItems->listPlaylistItems('snippet', array(
+		'playlistId' => $uploadsPlaylist,
+		'maxResults' => $maxNum
+	))['items'];
+
+	foreach($playlistItems as $vid)
 	{
-		array_push($ret, vidEntryToArray($vid, $channel));
+		array_push($ret, playlistItemToArray($vid, $channelID, $youtube));
 		if (count($ret) >= $maxNum)
 		{
 			break;
@@ -99,33 +126,23 @@ function getUploads($channel, $yt, $maxNum = 25)
 
 function update_with_api()
 {
-	error_log("Updated triggered...");
-	// The API needs its library in the include_path.
-	set_include_path(
-		get_include_path()
-		.
-		PATH_SEPARATOR
-		.
-		$_SERVER['DOCUMENT_ROOT'] . "/ZendFramework-1.12.7/library"
-	);
-	
-	global $api_key;
-	// Initialize the API with my key
-	require_once 'Zend/Loader.php'; // the Zend dir must be in your include_path
-	Zend_Loader::loadClass('Zend_Gdata_YouTube');
-	$yt = new Zend_Gdata_YouTube(null, "Brady vs. Grey - PHP version", null, $api_key);
-	$yt->setMajorProtocolVersion(2);
+	error_log("Update triggered...");
 
-	global $greyChannels, $bradyChannels;
+	$client = new Google_Client();
+	global $api_key;
+	$client->setDeveloperKey($api_key);
+	$youtube = new Google_Service_YouTube($client);
+	
+	global $greyChannelIDs, $bradyChannelIDs;
 	$vids = array( );
 	
-	foreach ($greyChannels as $channel)
+	foreach ($greyChannelIDs as $channelID)
 	{
-		$vids = array_merge($vids, getUploads($channel, $yt, 1));
+		$vids = array_merge($vids, getUploads($channelID, $youtube, 1));
 	}
-	foreach ($bradyChannels as $channel)
+	foreach ($bradyChannelIDs as $channelID)
 	{
-		$vids = array_merge($vids, getUploads($channel, $yt, 20));
+		$vids = array_merge($vids, getUploads($channelID, $youtube, 20));
 	}
 	
 	foreach ($vids as $vid)
