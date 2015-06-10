@@ -19,7 +19,7 @@ $bradyChannelNames = array(
 'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
 'bibledex', 'wordsoftheworld', 'FavScientist',
 'psyfile', 'BackstageScience', 'foodskey',
-'BradyStuff', 'Numberhpile2', 'Objectivity');
+'BradyStuff', 'Numberphile2', 'Objectivity');
 
 $greyChannelIDs = array('UC2C_jShtL725hvbm1arSV9w');
 $bradyChannelIDs = array(
