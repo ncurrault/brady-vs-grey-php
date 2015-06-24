@@ -480,7 +480,7 @@ else
 				Frontend created with <a href="http://getbootstrap.com">Bootstrap</a>.
 			</p>
 			<p class="row">
-				YouTube data obtained with <a href="http://developers.google.com/youtube/2.0/developers_guide_protocol">YouTube Data API (v2)</a>.
+				YouTube data obtained with <a href="https://developers.google.com/youtube/v3/">YouTube Data API (v3)</a>.
 			</p>
 			<p class="row">
 				Hosting and PostgreSQL database by <a href="http://heroku.com">Heroku</a>.
