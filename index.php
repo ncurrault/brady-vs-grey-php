@@ -474,18 +474,16 @@ else
 			<h3 class="row">Credits</h3>
 			
 			<p class="row">
-				View count comparison chart generated with <a href="http://d3js.org">D3</a>.
-			</p>
-			<p class="row">
-				Frontend created with <a href="http://getbootstrap.com">Bootstrap</a>.
-			</p>
-			<p class="row">
-				YouTube data obtained with <a href="https://developers.google.com/youtube/v3/">YouTube Data API (v3)</a>.
-			</p>
-			<p class="row">
 				Hosting and PostgreSQL database by <a href="http://heroku.com">Heroku</a>.
 			</p>
 			
+			<p class="row">
+				The view count comparison chart generated with <a href="http://d3js.org">D3</a>,
+				the frontend was created with <a href="http://getbootstrap.com">Bootstrap</a>,
+				and YouTube data obtained with <a href="https://developers.google.com/youtube/v3/">YouTube Data API (v3)</a> via Google APIs Client Library for PHP.
+				
+				The full acknowledgements for these softwares are listed <a href="Acknowledgements.txt">here</a>.
+			</p>
 
 			<!-- NOTES HERE -->
 			<h3 class="row">Notes</h3>
