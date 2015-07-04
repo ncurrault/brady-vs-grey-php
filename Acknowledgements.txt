@@ -1,4 +1,4 @@
-The following software may be included in this product:
+The following softwares may be included in this product:
 
 
 Google APIs Client Library for PHP; Use of any of this software is governed by the terms of the license below:
