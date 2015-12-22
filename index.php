@@ -246,12 +246,14 @@ else
 					bradyTotal: bradyTotal
 				};
 				
+				var maxBarWidth = (0.5 + Math.random() * 0.5) * $("#viewCountChart").width(); // This allows the hidden bar to be less opbious
+
 				var dataToWidth = d3.scale.linear()
 				.domain([0, d3.max(data)])
-				.range([3, $("#viewCountChart").width()]);
+				.range([3, maxBarWidth]);
 
 				var widthToData = d3.scale.linear()
-				.domain([3, $("#viewCountChart").width()])
+				.domain([3, maxBarWidth])
 				.range([0, d3.max(data)]);
 				
 
