@@ -10,7 +10,7 @@ $notesFile = "notes.html";
 if (file_exists($cacheFile))
 {
 	include($cacheFile);
-	
+
 	exit();
 }
 error_log("No cache file found; generating page...");
@@ -30,7 +30,7 @@ if (!$greyVid || !$lastUpdate) // The database is urgently in need of an update.
 {
 	update_with_api();
 	fetchData(); // Use the newly-found data
-}	
+}
 
 function echoVidRow($vid)
 {
@@ -55,12 +55,12 @@ function echoVidRow($vid)
 	{
 		$views = "&lt;not yet calculated&gt;"; // This should never happen.
 	}
-	
+
 	elseif ($views == -3)
 	{
 		$views = "&lt;error&gt;"; // This should REALLY never happen
 	}
-	
+
 	echo "<tr>
 	<td>$creator</td>
 	<td>$channel</td>
@@ -101,21 +101,12 @@ else
 				document.getElementsByClassName('hidden-to-grey')[i].hidden = false;
 			}
 			var button = document.getElementById('hidden-stuff-toggle');
-			button.parentNode.removeChild(button);	
+			button.parentNode.removeChild(button);
 		}
-	</script>
-	
-	<script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    
-      ga('create', 'UA-50387911-1', 'brady-vs-grey.appspot.com');
-      ga('send', 'pageview');
 	</script>
 </head>
 <body>
+<?php include_once("analyticstracking.php") ?>
 <font size="5">Q: How many videos has Brady Haran released since C.G.P. Grey last released a video?<br />
 A:
 </font>

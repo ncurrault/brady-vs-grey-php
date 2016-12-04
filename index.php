@@ -10,7 +10,7 @@ $notesFile = "notes.html";
 if (file_exists($cacheFile))
 {
 	include($cacheFile);
-	
+
 	exit();
 }
 error_log("No cache file found; generating page...");
@@ -30,7 +30,7 @@ if (!$greyVid || !$lastUpdate) // The database is urgently in need of an update.
 {
 	update_with_api();
 	fetchData(); // Use the newly-found data
-}	
+}
 
 function echoVidRow($vid, $isEven)
 {
@@ -55,14 +55,14 @@ function echoVidRow($vid, $isEven)
 	{
 		$views = "&lt;not yet calculated&gt;"; // This should never happen.
 	}
-	
+
 	elseif ($views == -3)
 	{
 		$views = "&lt;error&gt;"; // This should REALLY never happen
 	}
 
 	$classForShading = $isEven ? 'tableRowEven' : 'tableRowOdd';
-	
+
 	echo "<div class='row $classForShading'>
 	<div class='col-sm-2 col-sm-3'>$channel</div>
 	<div class='col-sm-3 col-sm-4 col-xs-8'>$uploaded</div>
@@ -93,22 +93,13 @@ else
 <html>
 	<head>
 		<title>Brady vs. Grey | Improved</title>
-		<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-		ga('create', 'UA-50387911-2', 'brady-vs-grey.herokuapp.com');
-		ga('send', 'pageview');
-		</script>
-		
 		<!-- Bootstrap -->
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<link href="css/bootstrap.min.css" rel="stylesheet">
-		
+
 		<!-- jQuery -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
@@ -167,25 +158,25 @@ else
 				}
 				);
 			});
-			
+
 			// Calculate text sizes based on window size
 			$(function()
-			{			
+			{
 				function fitText()
 				{
 					$("#theNumber").css({
 						"font-size": (0.5 * $(window).height()) + "px"
 					});
-					
+
 					$("#viewCountCompare div[class*='col-']").css({
 						"font-size": (0.04 * $(window).height()) + "px"
 					});
 				}
-				
+
 				$(window).resize(fitText); // Sets "fitText" as a callback.
 				fitText();
 			});
-			
+
 			// Hide/show back-to-top button appropriately
 			$(function()
 			{
@@ -193,7 +184,7 @@ else
 				{
 					var winHeight = $(window).height();
 					var scrollPos = $(document).scrollTop();
-					
+
 					if (scrollPos < winHeight)
 					{
 						$("#backButton").css({"opacity": scrollPos/winHeight })
@@ -203,9 +194,9 @@ else
 						$("#backButton").css({"opacity": 1 })
 					}
 				});
-				
+
 			});
-			
+
 			// Set up smooth scrolling
 			$(function()
 			{
@@ -216,11 +207,11 @@ else
 					return false;
 				});
 			});
-			
+
 			// Draw graph
 			$(function()
-			{			
-				
+			{
+
 				var grey = parseInt($("#viewCountChart").data("grey"));
 				var bradyTotal = parseInt($("#viewCountChart").data("brady-total"));
 				if (bradyTotal == 0) // The whole graph thingy really doesn't work here
@@ -229,23 +220,23 @@ else
 					$("#greyViews").html( $("#greyViews noscript").html() );
 					$("#bradyAvg").html( $("#bradyAvg noscript").html() );
 					$("#bradyTotal").html( $("#bradyTotal noscript").html() );
-					
+
 					$("#viewCountChart").remove();
 
 					return;
 				}
-				
+
 				var bradyAvg = parseInt($("#viewCountChart").data("brady-avg"));
 
 				// Graph setup
 				var data = [grey, bradyAvg, bradyTotal];
-				
+
 				var whereToWrite = {
 					greyViews: grey,
 					bradyAvg: bradyAvg,
 					bradyTotal: bradyTotal
 				};
-				
+
 				var maxBarWidth = (0.5 + Math.random() * 0.5) * $("#viewCountChart").width(); // This allows the hidden bar to be less opbious
 
 				var dataToWidth = d3.scale.linear()
@@ -255,7 +246,7 @@ else
 				var widthToData = d3.scale.linear()
 				.domain([3, maxBarWidth])
 				.range([0, d3.max(data)]);
-				
+
 
 				d3.select("#viewCountChart").selectAll("div")
 				.data(data)
@@ -276,7 +267,7 @@ else
 				.style({
 					"height": (0.15 * $(window).height() ).toString() + "px",
 				});
-				
+
 				function animateGraph()
 				{
 					$("#viewCountChart div").each(function ()
@@ -304,9 +295,9 @@ else
 							);
 					});
 				}
-				
+
 				var graphAnimated = false;
-				
+
 				$(document).scroll(function ()
 				{
 					var fullGraphVisible = (
@@ -318,7 +309,7 @@ else
 						<=
 						1.03 * ($(document).scrollTop() + $(window).outerHeight())
 						);
-					
+
 					if (fullGraphVisible && !graphAnimated)
 					{
 						setTimeout(function()
@@ -328,7 +319,7 @@ else
 
 							animateGraph();
 						}, 100);
-						
+
 						graphAnimated = true;
 					}
 					else if (!fullGraphVisible)
@@ -355,6 +346,8 @@ else
 		</script>
 	</head>
 	<body class="container-fluid">
+		<?php include_once("analyticstracking.php") ?>
+
 		<div class="jumbotron mainSection" id="mainCounterJumbotron">
 			<h3 class="row">
 				How many videos has Brady Haran released since C.G.P. Grey last released a video?
@@ -371,18 +364,18 @@ else
 
 		<div class="mainSection" id="videoList">
 			<div class="row">
-				<h2 class="row col-sm-10 col-xs-7"> 
+				<h2 class="row col-sm-10 col-xs-7">
 					Grey's video
 				</h2>
 				<div class="col-sm-2 col-xs-5"></div>
 			</div>
-			
+
 			<div class="row table-head">
 				<div class="col-sm-2 col-sm-3">Channel</div>
 				<div class="col-sm-3 col-sm-4 col-xs-8">Published</div>
 				<div class="col-md-1 col-sm-2 col-xs-4 right-align">Views</div>
 				<div class="col-md-6 col-sm-5">Title/Link</div>
-			</div>	
+			</div>
 			<?php echoVidRow($greyVid, true); ?>
 
 
@@ -474,16 +467,16 @@ else
 			</p>
 
 			<h3 class="row">Credits</h3>
-			
+
 			<p class="row">
 				Hosting and PostgreSQL database by <a href="http://heroku.com">Heroku</a>.
 			</p>
-			
+
 			<p class="row">
 				The view count comparison chart generated with <a href="http://d3js.org">D3</a>,
 				the frontend was created with <a href="http://getbootstrap.com">Bootstrap</a>,
 				and YouTube data obtained with <a href="https://developers.google.com/youtube/v3/">YouTube Data API (v3)</a> via Google APIs Client Library for PHP.
-				
+
 				The full acknowledgements for these softwares are listed <a href="Acknowledgements.txt">here</a>.
 			</p>
 
