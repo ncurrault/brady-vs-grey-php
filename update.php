@@ -15,7 +15,7 @@ $api_key = $_ENV["YOUTUBE_API_KEY"];
 
 $greyChannelNames = array('CGPGrey');
 $bradyChannelNames = array(
-'numberphile', 'Computerphile', 'sixtysymbols',
+'numberphile', 'sixtysymbols',
 'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
 'bibledex', 'wordsoftheworld', 'FavScientist',
 'psyfile', 'BackstageScience', 'foodskey',
@@ -23,7 +23,7 @@ $bradyChannelNames = array(
 
 $greyChannelIDs = array('UC2C_jShtL725hvbm1arSV9w');
 $bradyChannelIDs = array(
-'UCoxcjq-8xIDTYp3uz647V5A', 'UC9-y-6csu5WGm29I7JiwpnA', 'UCvBqzzvUBLCs8Y7Axb-jZew',
+'UCoxcjq-8xIDTYp3uz647V5A', 'UCvBqzzvUBLCs8Y7Axb-jZew',
 'UCtESv1e7ntJaLJYKIO1FoYw', 'UCCAgrIbwcJ67zIow1pNF30A', 'UCo-3ThNQmPmQSQL_L6Lx1_w',
 'UCnQtJro3IurKlxp7XSPqpaA', 'UC-YO7JkqlrBsgMGiAlqQ7Tg', 'UC4_HPD_v8Id82lnBrX7w7lg',
 'UCNGSLqZab4TkgY8cnJQxgtA', 'UCP16wb-IThCVvM8D-Xx8HXA', 'UCWUq6teKH18Iwuh41D75sQg',
