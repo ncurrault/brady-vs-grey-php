@@ -19,7 +19,8 @@ $bradyChannelNames = array(
 'periodicvideos', 'nottinghamscience', 'DeepSkyVideos',
 'bibledex', 'wordsoftheworld', 'FavScientist',
 'psyfile', 'BackstageScience', 'foodskey',
-'BradyStuff', 'Numberphile2', 'Objectivity');
+'BradyStuff', 'Numberphile2', 'Objectivity',
+'PhilosophyFile');
 
 $greyChannelIDs = array('UC2C_jShtL725hvbm1arSV9w');
 $bradyChannelIDs = array(
@@ -27,7 +28,8 @@ $bradyChannelIDs = array(
 'UCtESv1e7ntJaLJYKIO1FoYw', 'UCCAgrIbwcJ67zIow1pNF30A', 'UCo-3ThNQmPmQSQL_L6Lx1_w',
 'UCnQtJro3IurKlxp7XSPqpaA', 'UC-YO7JkqlrBsgMGiAlqQ7Tg', 'UC4_HPD_v8Id82lnBrX7w7lg',
 'UCNGSLqZab4TkgY8cnJQxgtA', 'UCP16wb-IThCVvM8D-Xx8HXA', 'UCWUq6teKH18Iwuh41D75sQg',
-'UCRwr1kxjL-8m1L6mQXB2zSQ', 'UCyp1gCHZJU_fGWFf2rtMkCg', 'UCtwKon9qMt5YLVgQt1tvJKg');
+'UCRwr1kxjL-8m1L6mQXB2zSQ', 'UCyp1gCHZJU_fGWFf2rtMkCg', 'UCtwKon9qMt5YLVgQt1tvJKg',
+'UCIThl1QA8ICaoYT630pn4IA');
 
 $allNames = array_merge($greyChannelNames, $bradyChannelNames);
 $allIDs = array_merge($greyChannelIDs, $bradyChannelIDs);
