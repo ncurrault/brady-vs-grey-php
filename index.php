@@ -1,36 +1,25 @@
 <?php
-require_once "sql_functions.php";
-require_once "update.php";
+require_once "load_vids.php";
 
 // Specify these file names; they may change.
 $cacheFile = "cache-standard.html";
 $notesFile = "notes.html";
 
-// Check if the cached file is still fresh. If it is, serve it up and exit.
-if (file_exists($cacheFile))
+$cachetime = 21600; // 6 hours
+if (file_exists($cacheFile) && time() - $cachetime < filemtime($cachefile))
 {
 	include($cacheFile);
 
 	exit();
 }
+touch($cacheFile); // prevent almost-simultaneous requests from triggering 2 updates
 error_log("No cache file found; generating page...");
 
-
 ob_start();
-function fetchData()
-{
-	global $greyVid, $bradyVids, $lastUpdate;
-
-	$greyVid = sqlQuery("SELECT * FROM Video WHERE creator='C.G.P. Grey' ORDER BY uploaddate DESC LIMIT 1")[0];
-	$bradyVids = sqlQuery("SELECT * FROM Video WHERE creator='Brady Haran' AND uploaddate > $1 ORDER BY uploaddate DESC", array($greyVid["uploaddate"]));
-	$lastUpdate = sqlQuery("SELECT * FROM UpdateLog ORDER BY updatedatetime DESC LIMIT 1")[0]['updatedatetime'];
-}
-fetchData();
-if (!$greyVid || !$lastUpdate) // The database is urgently in need of an update...
-{
-	update_with_api();
-	fetchData(); // Use the newly-found data
-}
+$vidData = getVidData();
+$greyVid = $vidData['greyVid'];
+$bradyVids = $vidData['bradyVids'];
+$lastUpdate = strftime("%F %T");
 
 function echoVidRow($vid, $isEven)
 {
@@ -469,7 +458,7 @@ else
 			<h3 class="row">Credits</h3>
 
 			<p class="row">
-				Hosting and PostgreSQL database by <a href="http://heroku.com">Heroku</a>.
+				Hosting by <a href="http://heroku.com">Heroku</a>.
 			</p>
 
 			<p class="row">
