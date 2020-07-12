@@ -6,7 +6,7 @@ $cacheFile = "cache-classic.html";
 $notesFile = "notes.html";
 
 $cachetime = 21600; // 6 hours
-if (file_exists($cacheFile) && time() - $cachetime < filemtime($cachefile))
+if (file_exists($cacheFile) && time() - $cachetime < filemtime($cacheFile))
 {
 	include($cacheFile);
 
