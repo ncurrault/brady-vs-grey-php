@@ -5,7 +5,7 @@ require_once "load_vids.php";
 $cacheFile = "cache-standard.html";
 $notesFile = "notes.html";
 
-$cachetime = 21600; // 6 hours
+$cachetime = 86400; // 1 day
 if (file_exists($cacheFile) && time() - $cachetime < filemtime($cacheFile))
 {
 	include($cacheFile);
