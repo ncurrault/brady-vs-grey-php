@@ -4,7 +4,7 @@
 // header("Content-Type: text/plain"); // For debugging with print_r
 
 // YouTube Data API v3
-require_once 'Google/autoload.php';
+require_once 'vendor/autoload.php';
 
 // for the API key
 $api_key = $_ENV["YOUTUBE_API_KEY"];
